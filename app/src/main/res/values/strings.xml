@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">e-commerce</string>
+    <string name="splash_text">All you need.</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="proceed_with_your">Proceed with your</string>
+    <string name="register">Register</string>
+    <string name="login_now">Have an account. Login now</string>
+
+
+    <string-array name="names">
+        <item>SORT</item>
+        <item>All products</item>
+        <item>Max price</item>
+        <item>Min price</item>
+        <item>On sale</item>
+    </string-array>
+</resources>
