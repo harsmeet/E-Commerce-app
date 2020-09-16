@@ -17,11 +17,6 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
 
-//    on_sale
-//    min_price	string
-//    max_price	string
-
-
     @POST("customers")
     Call<Data> createCustomer(@Body HashMap<String, String> map);
 
@@ -33,5 +28,7 @@ public interface APIInterface {
     @GET("products")
     Call<List<Datum>> getMaxPrice(@Query("consumer_key") String key,
                                   @Query("consumer_secret") String secret,
-                                  @Query("max_price") int maxPrice);
+                                  @Query("max_price") int maxPrice,
+                                  @Query("per_page") int perPage);
+
 }

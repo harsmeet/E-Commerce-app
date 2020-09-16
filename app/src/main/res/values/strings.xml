@@ -8,6 +8,15 @@
     <string name="proceed_with_your">Proceed with your</string>
     <string name="register">Register</string>
     <string name="login_now">Have an account. Login now</string>
+    <string name="filter">FILTER</string>
+    <string name="filter_screen">Filter</string>
+    <string name="price_screen">Price</string>
+    <string name="view_results">VIEW RESULTS</string>
+    <string name="product_details">Product Details</string>
+    <string name="fake_data">s a 1993 compilation of platform games for the Super Nintendo Entertainment System. It contains remakes of Nintendo\'s four Super Mario titles released for the Nintendo Entertainment System and its Family Computer Disk</string>
+
+    <string name="open_drawable">open</string>
+    <string name="close_drawable">close</string>
 
 
     <string-array name="names">

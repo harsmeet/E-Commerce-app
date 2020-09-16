@@ -24,6 +24,9 @@ public class Datum implements Parcelable {
     @SerializedName("price")
     @Expose
     private String price;
+    @SerializedName("description")
+    @Expose
+    private String description;
     @SerializedName("images")
     @Expose
     private List<Image> images = null;
@@ -37,6 +40,7 @@ public class Datum implements Parcelable {
         name = in.readString();
         slug = in.readString();
         price = in.readString();
+        description = in.readString();
         images = in.createTypedArrayList(Image.CREATOR);
         categories = in.createTypedArrayList(Category.CREATOR);
     }
@@ -69,14 +73,16 @@ public class Datum implements Parcelable {
         return name;
     }
 
-
     public List<Image> getImages() {
         return images;
     }
 
-
     public String getPrice() {
         return price;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 
@@ -91,6 +97,7 @@ public class Datum implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(slug);
         parcel.writeString(price);
+        parcel.writeString(description);
         parcel.writeTypedList(images);
         parcel.writeTypedList(categories);
     }

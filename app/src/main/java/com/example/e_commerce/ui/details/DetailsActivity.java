@@ -22,11 +22,13 @@ public class DetailsActivity extends AppCompatActivity {
     String title;
     String category;
     String price;
+    String caption;
     ActivityDetailsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize binding
         binding = ActivityDetailsBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -39,20 +41,8 @@ public class DetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         datum = intent.getParcelableExtra(Constants.INTENT_KEY);
 
-        // Store coming data by intent
-        assert datum != null;
-        productImage = datum.getImages().get(0).getSrc();
-        title = datum.getName();
-        category = datum.getCategories().get(0).getName();
-        price = datum.getPrice();
-
-        // Update the views on screen
-        Picasso.get()
-                .load(productImage)
-                .into(binding.ivProduct);
-        binding.tvTitle.setText(title);
-        binding.tvCategory.setText(category);
-        binding.tvPrice.setText(price);
+        // Update ui
+        updateUI();
     }
 
     @Override
@@ -63,5 +53,28 @@ public class DetailsActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * Update the views on screen
+     */
+    private void updateUI() {
+        // Store coming data by intent
+        assert datum != null;
+        productImage = datum.getImages().get(0).getSrc();
+        title = datum.getName();
+        category = datum.getCategories().get(0).getName();
+        price = datum.getPrice();
+        caption = datum.getDescription();
+
+        // Display views
+        Picasso.get()
+                .load(productImage)
+                .into(binding.ivProduct);
+        binding.tvTitle.setText(title);
+        binding.tvCategory.setText(category);
+        binding.tvPrice.setText(price);
+        binding.tvProductCaption.setText(caption);
     }
 }

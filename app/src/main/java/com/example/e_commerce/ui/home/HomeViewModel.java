@@ -24,7 +24,7 @@ public class HomeViewModel extends AndroidViewModel {
      */
     public HomeViewModel(@NonNull Application application) {
         super(application);
-        repo = new HomeRepo();
+        repo = new HomeRepo(application);
     }
 
 
@@ -35,11 +35,6 @@ public class HomeViewModel extends AndroidViewModel {
      */
     public MutableLiveData<List<Datum>> getDatumList() {
         return repo.getListDatumResponse();
-    }
-
-
-    public MutableLiveData<String> getError() {
-        return repo.getFailureResponse();
     }
 
 

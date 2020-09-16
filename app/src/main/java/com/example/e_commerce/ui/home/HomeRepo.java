@@ -1,5 +1,9 @@
 package com.example.e_commerce.ui.home;
 
+import android.content.Context;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.e_commerce.data.model.products.Datum;
@@ -15,18 +19,21 @@ import retrofit2.Response;
 
 public class HomeRepo extends GlobalRepo {
 
+    Context context;
+
+
+    public HomeRepo(Context context) {
+        this.context = context;
+    }
 
     /**
      * Default constructor
      */
-    public HomeRepo() {
-    }
 
 
     // Initialization
     List<Datum> datumList;
     MutableLiveData<List<Datum>> listDatumResponse = new MutableLiveData<>();
-    MutableLiveData<String> failureResponse = new MutableLiveData<>();
 
 
     /**
@@ -36,11 +43,6 @@ public class HomeRepo extends GlobalRepo {
      */
     public MutableLiveData<List<Datum>> getListDatumResponse() {
         return listDatumResponse;
-    }
-
-
-    public MutableLiveData<String> getFailureResponse() {
-        return failureResponse;
     }
 
 
@@ -60,7 +62,7 @@ public class HomeRepo extends GlobalRepo {
 
             @Override
             public void onFailure(Call<List<Datum>> call, Throwable t) {
-                failureResponse.setValue(t.toString());
+                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -71,7 +73,7 @@ public class HomeRepo extends GlobalRepo {
      */
     public void getMaxPrice() {
         APIClient.getINSTANCE().getApi().getMaxPrice(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
-                 150).enqueue(new Callback<List<Datum>>() {
+                150, 30).enqueue(new Callback<List<Datum>>() {
             @Override
             public void onResponse(Call<List<Datum>> call, Response<List<Datum>> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -82,7 +84,7 @@ public class HomeRepo extends GlobalRepo {
 
             @Override
             public void onFailure(Call<List<Datum>> call, Throwable t) {
-                failureResponse.setValue(t.toString());
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
