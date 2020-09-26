@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +25,9 @@ import com.example.e_commerce.adapter.ProductAdapter;
 import com.example.e_commerce.adapter.ProductAdapterList;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.ActivityHomeBinding;
+import com.example.e_commerce.databinding.LayoutProductsBinding;
+import com.example.e_commerce.ui.auth.SignUpActivity;
+import com.example.e_commerce.ui.favourite.FavouriteActivity;
 import com.example.e_commerce.ui.filter.FilterActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -33,7 +39,23 @@ import java.util.Objects;
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
 
-    private static final String TAG = HomeActivity.class.getSimpleName();
+    /**
+     * Initialization
+     */
+    private static final String MyPREFERENCES = "PREFERENCE";
+    private static final String CATEGORY = "CATEGORY";
+    private static final String ALL_PRODUCTS = "ALL_PRODUCTS";
+    private static final String MEN = "MEN";
+    private static final String WOMEN = "WOMEN";
+    private static final String GRID = "GRID";
+    private static final String LIST = "LIST";
+    private static final String VIEW_TYPE = "VIEW_TYPE";
+
+    private ActionBarDrawerToggle toggle;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+    private int allItems;
+
     ActivityHomeBinding binding;
     HomeViewModel viewModel;
     ProductAdapter adapter;
@@ -41,7 +63,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     GridLayoutManager layoutManager;
     LinearLayoutManager linearLayoutManager;
     List<Datum> datumList;
-    private ActionBarDrawerToggle toggle;
+    Datum datum;
 
 
     @Override
@@ -52,24 +74,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         View view = binding.getRoot();
         setContentView(view);
 
-        // Custom action bar
-        setSupportActionBar(binding.toolBar);
+        // Initialization
+        initViews();
+
         // Start shimmer loading screen
         binding.shimmerFrame.startShimmer();
         binding.shimmerFrame.setVisibility(View.VISIBLE);
 
-        // Initialization
-        initViews();
-        viewModel.getAllProducts();
+
+        // Retrieve data
+        retrieveData();
 
         // Observe the changes from live data
         viewModel.getDatumList().observe(this, data -> {
-            updateUi();
             datumList = data;
-            adapter = new ProductAdapter(HomeActivity.this, data);
-            binding.recyclerView.setHasFixedSize(true);
-            binding.recyclerView.setAdapter(adapter);
+            updateUi();
         });
+
 
         // Click listener on spinner
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -78,17 +99,24 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (i == 1) {
                     setupVisibility();
+                    editor.putString(CATEGORY, ALL_PRODUCTS);
                     viewModel.getAllProducts();
 
                 } else if (i == 2) {
                     setupVisibility();
-                    viewModel.getMaxPrice();
+                    editor.putString(CATEGORY, MEN);
+                    viewModel.getCategory("24");
+
+                } else if (i == 3) {
+                    setupVisibility();
+                    editor.putString(CATEGORY, WOMEN);
+                    viewModel.getCategory("27");
                 }
+                editor.commit();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
     }
@@ -138,11 +166,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.profile:
-                Toast.makeText(getApplicationContext(), "Profile", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
                 break;
 
             case R.id.info:
                 Toast.makeText(getApplicationContext(), "Info", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.wishlist:
+                startActivity(new Intent(HomeActivity.this, FavouriteActivity.class));
                 break;
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
@@ -154,17 +186,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Initialization and assignment for views
      */
     private void initViews() {
-
+        // Setup for toolbar
+        setSupportActionBar(binding.toolBar);
         // Setup for view model
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         datumList = new ArrayList<>();
+        datum = new Datum();
+
+        // Setup for shared preferences and Room Database
+        preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        editor = preferences.edit();
 
         // Setup for navigation view
         toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open_drawable, R.string.close_drawable);
         toggle.syncState();
         binding.navView.bringToFront();
+        // Custom action bar
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
         // Setup for spinner adapter
         initSpinnerAdapter();
 
@@ -181,10 +219,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Populate data on screen
      */
     private void updateUi() {
-        binding.recyclerView.setVisibility(View.VISIBLE);
-        binding.shimmerFrame.setVisibility(View.GONE);
-        layoutManager = new GridLayoutManager(HomeActivity.this, 2);
-        binding.recyclerView.setLayoutManager(layoutManager);
+        String view = preferences.getString(VIEW_TYPE, "");
+
+        if (view.equals(LIST)) {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            binding.shimmerFrame.setVisibility(View.GONE);
+            displayList();
+
+        } else if (view.equals(GRID)) {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            binding.shimmerFrame.setVisibility(View.GONE);
+            displayGrid();
+
+        } else {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            binding.shimmerFrame.setVisibility(View.GONE);
+            displayGrid();
+        }
     }
 
 
@@ -197,6 +248,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         adapterList = new ProductAdapterList(HomeActivity.this, datumList);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapterList);
+
+        // Get number for all items shown on screen
+        allItems = adapterList.getItemCount();
+        binding.tvNumItems.setText(String.valueOf(allItems));
+
+        // Save in shared preferences
+        editor.putString(VIEW_TYPE, LIST);
+        editor.commit();
     }
 
 
@@ -209,6 +268,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new ProductAdapter(HomeActivity.this, datumList);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapter);
+
+        // Get number for all items shown on screen
+        allItems = adapter.getItemCount();
+        binding.tvNumItems.setText(String.valueOf(allItems));
+
+        // Save in shared preferences
+        editor.putString(VIEW_TYPE, GRID);
+        editor.commit();
     }
 
 
@@ -229,5 +296,25 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void setupVisibility() {
         binding.shimmerFrame.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.INVISIBLE);
+    }
+
+
+    /**
+     * Retrieve data from shared preferences
+     */
+    private void retrieveData() {
+        String value = preferences.getString(CATEGORY, "");
+        switch (value) {
+            case MEN:
+                viewModel.getCategory("24");
+                break;
+            case WOMEN:
+                viewModel.getCategory("27");
+                break;
+            case ALL_PRODUCTS:
+            default:
+                viewModel.getAllProducts();
+                break;
+        }
     }
 }

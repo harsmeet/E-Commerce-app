@@ -6,8 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Self {
 
+    /**
+     * Initialization
+     */
     @SerializedName("href")
     @Expose
     public String href;
-
 }

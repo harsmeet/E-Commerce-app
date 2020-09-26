@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.view.WindowManager;
 
 import com.example.e_commerce.R;
-import com.example.e_commerce.ui.auth.SignUpActivity;
 import com.example.e_commerce.ui.home.HomeActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -21,12 +20,9 @@ public class SplashActivity extends AppCompatActivity {
 
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                finish();
-            }
+        handler.postDelayed(() -> {
+            startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+            finish();
         }, 500);
     }
 }

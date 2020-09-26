@@ -17,13 +17,16 @@
 
     <string name="open_drawable">open</string>
     <string name="close_drawable">close</string>
+    <string name="see_list">See List</string>
+    <string name="add_wishlist">Added to Wishlist</string>
+    <string name="removed">Item removed</string>
+    <string name="add_to_cart">ADD TO CART</string>
 
 
     <string-array name="names">
         <item>SORT</item>
         <item>All products</item>
-        <item>Max price</item>
-        <item>Min price</item>
-        <item>On sale</item>
+        <item>Men</item>
+        <item>Women</item>
     </string-array>
 </resources>

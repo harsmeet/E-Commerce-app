@@ -8,11 +8,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Links {
 
+    /**
+     * Initialization
+     */
     @SerializedName("self")
     @Expose
-    public List<Self> self = null;
+    private List<Self> self = null;
     @SerializedName("collection")
     @Expose
-    public List<Collection> collection = null;
-
+    private List<Collection> collection = null;
 }

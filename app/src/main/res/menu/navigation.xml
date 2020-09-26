@@ -16,5 +16,9 @@
         android:icon="@drawable/ic_info"
         android:title="Info" />
 
+    <item
+        android:id="@+id/wishlist"
+        android:icon="@drawable/ic_favorite"
+        android:title="My Wishlist" />
 
 </menu>

@@ -1,7 +1,6 @@
 
 package com.example.e_commerce.data.model.register;
 
-import android.text.GetChars;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -11,6 +10,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Data {
 
+
+    /**
+     * Initialization
+     */
     @SerializedName("id")
     @Expose
     private int id;
@@ -61,6 +64,9 @@ public class Data {
     private Links links;
 
 
+    /**
+     * Getter and Setter
+     */
     public int getId() {
         return id;
     }
@@ -125,7 +131,6 @@ public class Data {
         return links;
     }
 
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -142,6 +147,7 @@ public class Data {
         this.username = username;
     }
 
+
     /**
      * Validate SignUp data
      *
@@ -149,7 +155,8 @@ public class Data {
      */
     public int validateData() {
         // Check values is empty or not.
-        if (TextUtils.isEmpty(getEmail()) || TextUtils.isEmpty(getUsername()) || TextUtils.isEmpty(getFirstName()) || TextUtils.isEmpty(getLastName())) {
+        if (TextUtils.isEmpty(getEmail()) || TextUtils.isEmpty(getUsername()) ||
+                TextUtils.isEmpty(getFirstName()) || TextUtils.isEmpty(getLastName())) {
             return 0;
         } else {
             return 1;

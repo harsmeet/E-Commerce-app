@@ -6,10 +6,20 @@ import com.google.gson.annotations.SerializedName;
 
 public class Collection {
 
+
+    /**
+     * Initialization
+     */
     @SerializedName("href")
     @Expose
     private String href;
 
+
+    /**
+     * Getter and Setter
+     *
+     * @return values for setter methods
+     */
     public String getHref() {
         return href;
     }
@@ -17,5 +27,4 @@ public class Collection {
     public void setHref(String href) {
         this.href = href;
     }
-
 }

@@ -13,7 +13,10 @@ import java.util.List;
 
 public class HomeViewModel extends AndroidViewModel {
 
-    // Object from Repo class
+
+    /**
+     * Initialization
+     */
     private HomeRepo repo;
 
 
@@ -29,7 +32,7 @@ public class HomeViewModel extends AndroidViewModel {
 
 
     /**
-     * Get callback response from repo
+     * Get callback response
      *
      * @return mutable live data of Datum list
      */
@@ -39,7 +42,7 @@ public class HomeViewModel extends AndroidViewModel {
 
 
     /**
-     * Init retrofit request of products
+     * Init get request of products
      */
     public void getAllProducts() {
         repo.getAllProducts();
@@ -47,9 +50,9 @@ public class HomeViewModel extends AndroidViewModel {
 
 
     /**
-     * Init retrofit request of max price
+     * Init get request by category id
      */
-    public void getMaxPrice() {
-        repo.getMaxPrice();
+    public void getCategory(String id) {
+        repo.getCategory(id);
     }
 }

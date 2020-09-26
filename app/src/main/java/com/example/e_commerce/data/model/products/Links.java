@@ -8,6 +8,10 @@ import java.util.List;
 
 public class Links {
 
+
+    /**
+     * Initialization
+     */
     @SerializedName("self")
     @Expose
     private List<Self> self = null;
@@ -15,6 +19,10 @@ public class Links {
     @Expose
     private List<Collection> collection = null;
 
+
+    /**
+     * Getter and Setter
+     */
     public List<Self> getSelf() {
         return self;
     }
@@ -30,5 +38,4 @@ public class Links {
     public void setCollection(List<Collection> collection) {
         this.collection = collection;
     }
-
 }

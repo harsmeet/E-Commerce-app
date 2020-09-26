@@ -107,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="24dp"
             android:text="@string/filter"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -145,6 +145,28 @@
             app:layout_constraintEnd_toStartOf="@+id/tv_filter"
             app:layout_constraintTop_toBottomOf="@+id/searchView"
             tools:listitem="@android:layout/simple_list_item_1" />
+
+        <TextView
+            android:id="@+id/tv_num_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:text="0"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/iv_grid"
+            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="24dp"
+            android:text="items"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/tv_num_items"
+            app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

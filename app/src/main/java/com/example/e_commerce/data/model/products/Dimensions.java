@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Dimensions {
 
+    /**
+     * Initialization
+     */
     @SerializedName("length")
     @Expose
     private String length;
@@ -16,6 +19,10 @@ public class Dimensions {
     @Expose
     private String height;
 
+
+    /**
+     * Getter and Setter
+     */
     public String getLength() {
         return length;
     }
@@ -39,5 +46,4 @@ public class Dimensions {
     public void setHeight(String height) {
         this.height = height;
     }
-
 }

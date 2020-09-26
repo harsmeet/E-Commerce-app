@@ -12,7 +12,10 @@ import java.util.HashMap;
 
 public class SignUpViewModel extends AndroidViewModel {
 
-    // Object from Repo
+
+    /**
+     * Initialization
+     */
     private SignUpRepo repo;
 
 
@@ -28,7 +31,7 @@ public class SignUpViewModel extends AndroidViewModel {
 
 
     /**
-     * Get a message of response of sign up
+     * Get a message of coming response
      *
      * @return Mutable live data of String
      */
@@ -38,7 +41,7 @@ public class SignUpViewModel extends AndroidViewModel {
 
 
     /**
-     * Get the data from activity
+     * Get data from activity to pass it to repo
      *
      * @param map is a hash map of String
      */

@@ -25,10 +25,10 @@ public interface APIInterface {
                                   @Query("consumer_secret") String secret,
                                   @Query("per_page") int page);
 
-    @GET("products")
-    Call<List<Datum>> getMaxPrice(@Query("consumer_key") String key,
-                                  @Query("consumer_secret") String secret,
-                                  @Query("max_price") int maxPrice,
-                                  @Query("per_page") int perPage);
 
+    @GET("products")
+    Call<List<Datum>> getCategory(@Query("consumer_key") String key,
+                                  @Query("consumer_secret") String secret,
+                                  @Query("category") String category,
+                                  @Query("per_page") int page);
 }

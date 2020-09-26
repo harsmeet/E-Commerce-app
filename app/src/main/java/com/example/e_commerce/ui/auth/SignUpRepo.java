@@ -14,15 +14,17 @@ import retrofit2.Response;
 
 public class SignUpRepo extends GlobalRepo {
 
-    // Initialization
+
+    /**
+     * Initialization
+     */
     Data data = new Data();
     private MutableLiveData<String> signUpResponse = new MutableLiveData<>();
-
-    // Variables to store data
     String email;
     String userName;
     String firstName;
     String lastName;
+
 
     /**
      * Default constructor
@@ -32,7 +34,7 @@ public class SignUpRepo extends GlobalRepo {
 
 
     /**
-     * Get sign up response
+     * Getter for sign up response
      *
      * @return Mutable live data of String
      */
@@ -62,10 +64,10 @@ public class SignUpRepo extends GlobalRepo {
         // Validate the login data
         int errorCode = data.validateData();
         if (errorCode == 0) {
-            signUpResponse.setValue("Enter missing fields");
+            signUpResponse.setValue(Constants.MISSING);
 
         } else {
-            // Create a hash map object to pass it to interface class
+            // Create a hash map object to pass it to interface method
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("consumer_key", Constants.CONSUMER_KEY);
             hashMap.put("consumer_secret", Constants.CONSUMER_KEY);
@@ -80,17 +82,14 @@ public class SignUpRepo extends GlobalRepo {
                 public void onResponse(Call<Data> call, Response<Data> response) {
                     Data data = response.body();
                     assert data != null;
-                    signUpResponse.setValue("Registered Successfully");
+                    signUpResponse.setValue(Constants.SUCCESS);
                 }
 
                 @Override
                 public void onFailure(Call<Data> call, Throwable t) {
-                    signUpResponse.setValue("Registered Failed");
+                    signUpResponse.setValue(Constants.FAILED);
                 }
             });
         }
     }
 }
-
-
-

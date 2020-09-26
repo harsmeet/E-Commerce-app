@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class MetaDatum {
 
+
+    /**
+     * Initialization
+     */
     @SerializedName("id")
     @Expose
     private int id;
@@ -16,6 +20,10 @@ public class MetaDatum {
     @Expose
     private String value;
 
+
+    /**
+     * Getter and Setter
+     */
     public int getId() {
         return id;
     }
@@ -39,5 +47,4 @@ public class MetaDatum {
     public void setValue(String value) {
         this.value = value;
     }
-
 }

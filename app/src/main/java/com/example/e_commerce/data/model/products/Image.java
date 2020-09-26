@@ -9,6 +9,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Image implements Parcelable {
 
+
+    /**
+     * Initialization
+     */
     @SerializedName("id")
     @Expose
     private int id;
@@ -23,6 +27,11 @@ public class Image implements Parcelable {
     private String alt;
 
 
+    /**
+     * Constructor for parcel implementation
+     *
+     * @param in is a parcel
+     */
     protected Image(Parcel in) {
         id = in.readInt();
         src = in.readString();
@@ -30,6 +39,10 @@ public class Image implements Parcelable {
         alt = in.readString();
     }
 
+
+    /**
+     * Our creator for parcel implementation
+     */
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
         public Image createFromParcel(Parcel in) {
@@ -42,6 +55,36 @@ public class Image implements Parcelable {
         }
     };
 
+
+    /**
+     * Describe contents for parcel implementation
+     *
+     * @return integer
+     */
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    /**
+     * Writing to parcel
+     *
+     * @param parcel is a parcel object
+     * @param i      is integer
+     */
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(src);
+        parcel.writeString(name);
+        parcel.writeString(alt);
+    }
+
+
+    /**
+     * Getter and Setter
+     */
     public String getSrc() {
         return src;
     }
@@ -56,18 +99,5 @@ public class Image implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(src);
-        parcel.writeString(name);
-        parcel.writeString(alt);
     }
 }

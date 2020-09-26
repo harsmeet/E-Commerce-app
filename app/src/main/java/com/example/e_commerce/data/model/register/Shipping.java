@@ -6,32 +6,34 @@ import com.google.gson.annotations.SerializedName;
 
 public class Shipping {
 
+    /**
+     * Initialization
+     */
     @SerializedName("first_name")
     @Expose
-    public String firstName;
+    private String firstName;
     @SerializedName("last_name")
     @Expose
-    public String lastName;
+    private String lastName;
     @SerializedName("company")
     @Expose
-    public String company;
+    private String company;
     @SerializedName("address_1")
     @Expose
-    public String address1;
+    private String address1;
     @SerializedName("address_2")
     @Expose
-    public String address2;
+    private String address2;
     @SerializedName("city")
     @Expose
-    public String city;
+    private String city;
     @SerializedName("postcode")
     @Expose
-    public String postcode;
+    private String postcode;
     @SerializedName("country")
     @Expose
-    public String country;
+    private String country;
     @SerializedName("state")
     @Expose
-    public String state;
-
+    private String state;
 }

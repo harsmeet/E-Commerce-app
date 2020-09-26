@@ -10,6 +10,10 @@
     <color name="gray">#78909C</color>
     <color name="grayCustom">#e0e0e0</color>
     <color name="cartButton">#00BCD4</color>
+    <color name="customPrimaryDark">#047fe4</color>
+    <color name="customPrimary">#008cff</color>
+    <color name="toolbar">#ECEFF1</color>
+    <color name="ColorBell">#D81B60</color>
 
 
 </resources>

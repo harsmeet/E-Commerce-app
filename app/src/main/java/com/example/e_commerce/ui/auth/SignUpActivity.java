@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.example.e_commerce.R;
 import com.example.e_commerce.databinding.ActivitySignUpBinding;
 import com.example.e_commerce.ui.home.HomeActivity;
+import com.example.e_commerce.utlis.Constants;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -18,64 +19,81 @@ import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    // Initialization
+
+    /**
+     * Initialization
+     */
     private ActivitySignUpBinding binding;
-    SignUpViewModel viewModel;
-    private static final String SUCCESS = "Registered Successfully";
-    private static final String FAILED = "Registered Failed";
-    private static final String MISSING = "Enter missing fields";
+    private SignUpViewModel viewModel;
+    private String message;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Initialize binding
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
         // Initialization
-        viewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
+        initViews();
 
-        // Observe the changes on coming data
+        // Observe the changes from live data
         viewModel.getMessage().observe(this, s -> {
-            // Switch on coming message
-            switch (s) {
-                case SUCCESS:
-                    Toast.makeText(SignUpActivity.this, s, Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
-                    break;
-
-                case FAILED:
-                case MISSING:
-                    Toast.makeText(SignUpActivity.this, s, Toast.LENGTH_SHORT).show();
-                    break;
-            }
-            binding.loadingIndicator.setVisibility(View.INVISIBLE);
+            message = s;
+            updateUI();
         });
-
-        // Register click listener on Register Button
-        binding.btnRegister.setOnClickListener(this);
     }
+
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_register:
-                binding.loadingIndicator.setVisibility(View.VISIBLE);
+        if (view.getId() == R.id.btn_register) {
+            binding.loadingIndicator.setVisibility(View.VISIBLE);
+            getUserInput();
+        }
+    }
+
+
+    /**
+     * Initialize the views
+     */
+    private void initViews() {
+        // Setup for view model
+        viewModel = new ViewModelProvider(this).get(SignUpViewModel.class);
+        // Register click listener
+        binding.btnRegister.setOnClickListener(this);
+    }
+
+
+    /**
+     * Update ui on screen
+     */
+    private void updateUI() {
+        // Switch on coming message from live data
+        switch (message) {
+            case Constants.SUCCESS:
+                Toast.makeText(SignUpActivity.this, message, Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
-//                extractData();
+                break;
+
+            case Constants.FAILED:
+            case Constants.MISSING:
+                Toast.makeText(SignUpActivity.this, message, Toast.LENGTH_SHORT).show();
                 break;
         }
+        // Hide visibility for loading indicator
+        binding.loadingIndicator.setVisibility(View.INVISIBLE);
     }
 
 
     /**
      * Extract data from views to pass it to ViewModel
      */
-    private void extractData() {
+    private void getUserInput() {
         // Show progress bar indicator
         binding.loadingIndicator.setVisibility(View.VISIBLE);
-
         // Extract the values from all views
         String email = Objects.requireNonNull(binding.etEmail.getEditText()).getText().toString().trim();
         String userName = Objects.requireNonNull(binding.etUsername.getEditText()).getText().toString().trim();
@@ -89,7 +107,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         map.put("firstName", firstName);
         map.put("lastName", lastName);
 
-        // Pass hashmap object to the method
+        // Pass hashmap object to view model
         viewModel.getData(map);
     }
 }
