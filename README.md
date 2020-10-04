@@ -5,4 +5,5 @@ Displays the latest products of clothes via woo commerece api backend
 ![3-home-list](https://user-images.githubusercontent.com/43687458/95015966-4b92e300-0650-11eb-96a5-4f8338af14a7.jpeg)
 ![4-details](https://user-images.githubusercontent.com/43687458/95016122-4a15ea80-0651-11eb-8e72-0ca0970fd9b1.jpeg)
 ![6- more-details](https://user-images.githubusercontent.com/43687458/95016222-de804d00-0651-11eb-851d-2d342a11bb12.jpeg)
+![7-filter](https://user-images.githubusercontent.com/43687458/95016248-17202680-0652-11eb-81c9-6f63d56c4bc0.jpeg)
 
