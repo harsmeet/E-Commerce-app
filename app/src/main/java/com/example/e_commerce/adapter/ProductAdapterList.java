@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -83,11 +83,23 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get position of current item
         Datum currentItem = datumList.get(position);
+
+        // Save the state of checkbox when checked
+        mDb = AppDatabase.getInstance(context);
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            Datum datum = mDb.favouriteDao().fetchByName(currentItem.getName());
+            // if there's data saved in database. set true on checkbox
+            if (datum != null) {
+                holder.chFavourite.setChecked(true);
+            } else {
+                holder.chFavourite.setChecked(false);
+            }
+        });
+
         // Displays values on views
         holder.tvProductName.setText(currentItem.getName());
         holder.tvPrice.setText(currentItem.getPrice());
         holder.tvCategory.setText(currentItem.getCategories().get(0).getName());
-
         // Get url of the image
         String url = currentItem.getImages().get(0).getSrc();
         // Display the image by Picasso library
@@ -98,15 +110,14 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
 
 
         // Click listener on favourite button
-        holder.ivFavourite.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
+        holder.chFavourite.setOnClickListener(view -> {
+            if (holder.chFavourite.isChecked()) {
                 // Save item to wishlist
                 mDb = AppDatabase.getInstance(context);
                 AppExecutors.getInstance().diskIO().execute(() -> {
                     // Insert the selected item to the database
                     mDb.favouriteDao().insertItem(datumList.get(position));
                 });
-
                 // SnackBar setup
                 Snackbar snackbar =
                         Snackbar.make(holder.constraintLayout, R.string.add_wishlist, Snackbar.LENGTH_LONG)
@@ -115,7 +126,6 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
                                     context.startActivity(intent);
                                 }).setActionTextColor(Color.CYAN);
                 snackbar.show();
-
             } else {
                 // Delete item from Wishlist
                 mDb = AppDatabase.getInstance(context);
@@ -123,7 +133,6 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
                     // Delete the selected item from the database
                     mDb.favouriteDao().deleteItem(datumList.get(position));
                 });
-
                 // SnackBar
                 Snackbar snackbar =
                         Snackbar.make(holder.constraintLayout, R.string.removed, Snackbar.LENGTH_SHORT)
@@ -131,7 +140,6 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
                 snackbar.show();
             }
         });
-
 
         // Click listener on each item
         holder.itemView.setOnClickListener(view -> {
@@ -163,7 +171,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
         private TextView tvPrice;
         private TextView tvCategory;
         private ImageView ivProduct;
-        private ToggleButton ivFavourite;
+        private CheckBox chFavourite;
         private ConstraintLayout constraintLayout;
 
 
@@ -182,7 +190,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
             tvCategory = itemView.findViewById(R.id.tv_category);
             ivProduct = itemView.findViewById(R.id.iv_product);
             constraintLayout = itemView.findViewById(R.id.constraint_layout);
-            ivFavourite = itemView.findViewById(R.id.iv_favourite);
+            chFavourite = itemView.findViewById(R.id.ch_favourite);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -77,11 +78,23 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get position of current item
         Datum currentItem = datumList.get(position);
+
+        // Save the state of checkbox when checked
+        mDb = AppDatabase.getInstance(context);
+        AppExecutors.getInstance().diskIO().execute(() -> {
+            Datum datum = mDb.favouriteDao().fetchByName(currentItem.getName());
+            // if there's data saved in database. set true on checkbox
+            if (datum != null) {
+                holder.binding.chFavourite.setChecked(true);
+            } else {
+                holder.binding.chFavourite.setChecked(false);
+            }
+        });
+
         // Displays values on views
         holder.binding.tvProductName.setText(currentItem.getName());
         holder.binding.tvPrice.setText(currentItem.getPrice());
         holder.binding.tvCategory.setText(currentItem.getCategories().get(0).getName());
-
         // Get url of the image
         String url = currentItem.getImages().get(0).getSrc();
         // Display the image by Picasso library
@@ -92,21 +105,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
 
         // Click listener on favourite button
-        holder.binding.ivFavourite.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if (isChecked) {
+        holder.binding.chFavourite.setOnClickListener(view -> {
+            if (holder.binding.chFavourite.isChecked()) {
                 // Save item to wishlist
                 mDb = AppDatabase.getInstance(context);
                 AppExecutors.getInstance().diskIO().execute(() -> {
                     // Insert the selected item to the database
                     mDb.favouriteDao().insertItem(currentItem);
                 });
-
-//                LiveData<List<Datum>> list = mDb.favouriteDao().loadAllResults();
-////                Log.e(TAG, "onBindViewHolder: " + currentItem.getName());
-//                if (list != null){
-//                        holder.binding.ivFavourite.setChecked(true);
-//                }
-
                 // SnackBar setup
                 Snackbar snackbar =
                         Snackbar.make(holder.binding.constraintLayout, R.string.add_wishlist, Snackbar.LENGTH_LONG)
@@ -115,9 +121,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                                     context.startActivity(intent);
                                 }).setActionTextColor(Color.CYAN);
                 snackbar.show();
-
-            } else {
                 // Delete item from wishlist
+            } else {
                 mDb = AppDatabase.getInstance(context);
                 AppExecutors.getInstance().diskIO().execute(() -> {
                     // Delete the selected item from the database

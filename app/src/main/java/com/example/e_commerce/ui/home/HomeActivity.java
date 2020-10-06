@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -77,11 +76,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Initialization
         initViews();
 
-        // Start shimmer loading screen
-        binding.shimmerFrame.startShimmer();
-        binding.shimmerFrame.setVisibility(View.VISIBLE);
-
-
         // Retrieve data
         retrieveData();
 
@@ -141,15 +135,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-
+            // Grid button
             case R.id.iv_grid:
                 displayGrid();
                 break;
-
+            // List button
             case R.id.iv_list:
                 displayList();
                 break;
-
+            // Filter button
             case R.id.tv_filter:
                 startActivity(new Intent(HomeActivity.this, FilterActivity.class));
                 break;
@@ -188,6 +182,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         // Setup for toolbar
         setSupportActionBar(binding.toolBar);
+
+        // Start shimmer loading screen
+        binding.shimmerFrame.startShimmer();
+        binding.shimmerFrame.setVisibility(View.VISIBLE);
         // Setup for view model
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         datumList = new ArrayList<>();
@@ -252,7 +250,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Get number for all items shown on screen
         allItems = adapterList.getItemCount();
         binding.tvNumItems.setText(String.valueOf(allItems));
-
         // Save in shared preferences
         editor.putString(VIEW_TYPE, LIST);
         editor.commit();
@@ -272,7 +269,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Get number for all items shown on screen
         allItems = adapter.getItemCount();
         binding.tvNumItems.setText(String.valueOf(allItems));
-
         // Save in shared preferences
         editor.putString(VIEW_TYPE, GRID);
         editor.commit();

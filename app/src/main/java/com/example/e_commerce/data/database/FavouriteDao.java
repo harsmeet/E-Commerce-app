@@ -23,4 +23,7 @@ public interface FavouriteDao {
 
     @Delete
     void deleteItem(Datum datum);
+
+    @Query("SELECT * FROM favourites where name = :name")
+    Datum fetchByName(String name);
 }
