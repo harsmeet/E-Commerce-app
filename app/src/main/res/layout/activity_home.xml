@@ -90,7 +90,7 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
 
         <SearchView
-            android:id="@+id/searchView"
+            android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -112,7 +112,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
         <ImageView
             android:id="@+id/iv_list"
@@ -122,7 +122,7 @@
             android:layout_marginTop="24dp"
             android:src="@drawable/ic_view_list"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
         <ImageView
             android:id="@+id/iv_grid"
@@ -132,7 +132,7 @@
             android:layout_marginTop="24dp"
             android:src="@drawable/ic_grid_on"
             app:layout_constraintStart_toEndOf="@+id/iv_list"
-            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
 
         <Spinner
@@ -143,7 +143,7 @@
             android:layout_marginEnd="16dp"
             android:background="@null"
             app:layout_constraintEnd_toStartOf="@+id/tv_filter"
-            app:layout_constraintTop_toBottomOf="@+id/searchView"
+            app:layout_constraintTop_toBottomOf="@+id/search_view"
             tools:listitem="@android:layout/simple_list_item_1" />
 
         <TextView
@@ -155,7 +155,7 @@
             android:text="0"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/iv_grid"
-            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
         <TextView
             android:id="@+id/textView16"
@@ -166,7 +166,7 @@
             android:text="items"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/tv_num_items"
-            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+            app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

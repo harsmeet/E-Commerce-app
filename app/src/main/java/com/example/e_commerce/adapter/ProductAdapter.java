@@ -3,10 +3,10 @@ package com.example.e_commerce.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,16 +22,20 @@ import com.example.e_commerce.utlis.Constants;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>
+        implements Filterable {
 
 
     /**
      * Initialization
      */
     private List<Datum> datumList;
+    List<Datum> datumListAll;
     private Context context;
     private AppDatabase mDb;
 
@@ -45,6 +49,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public ProductAdapter(Context context, List<Datum> datumList) {
         this.datumList = datumList;
         this.context = context;
+        datumListAll = new ArrayList<>(datumList);
     }
 
 
@@ -157,6 +162,46 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public int getItemCount() {
         return datumList != null ? datumList.size() : 0;
     }
+
+
+    /**
+     * This method filter the results on search view widget
+     *
+     * @return a filter object
+     */
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    // Create a filter obj to use it
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            // Create a list to add filtered data inside it
+            List<Datum> filteredList = new ArrayList<>();
+            // Check if the filtered list is empty or not
+            if (charSequence.toString().isEmpty()) {
+                filteredList.addAll(datumListAll);
+            } else {
+                for (Datum item : datumListAll) {
+                    if (item.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            datumList.clear();
+            datumList.addAll((Collection<? extends Datum>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
 
     /**

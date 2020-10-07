@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.e_commerce.R;
@@ -24,7 +25,6 @@ import com.example.e_commerce.adapter.ProductAdapter;
 import com.example.e_commerce.adapter.ProductAdapterList;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.ActivityHomeBinding;
-import com.example.e_commerce.databinding.LayoutProductsBinding;
 import com.example.e_commerce.ui.auth.SignUpActivity;
 import com.example.e_commerce.ui.favourite.FavouriteActivity;
 import com.example.e_commerce.ui.filter.FilterActivity;
@@ -35,7 +35,8 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class HomeActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
 
     /**
@@ -75,7 +76,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         // Initialization
         initViews();
-
         // Retrieve data
         retrieveData();
 
@@ -112,6 +112,18 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
+        });
+
+
+        // Click close listener on search view
+        binding.searchView.setOnCloseListener(() -> {
+            if (binding.recyclerView.getLayoutManager() == linearLayoutManager) {
+                allItems = adapterList.getItemCount();
+            } else {
+                allItems = adapter.getItemCount();
+            }
+            binding.tvNumItems.setText(String.valueOf(allItems));
+            return false;
         });
     }
 
@@ -175,6 +187,27 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        // Check current layout manager to update items on a specific adapter
+        if (binding.recyclerView.getLayoutManager() == linearLayoutManager) {
+            adapterList.getFilter().filter(s);
+            allItems = adapterList.getItemCount();
+        } else {
+            adapter.getFilter().filter(s);
+            allItems = adapter.getItemCount();
+        }
+        // Get number for all items shown on screen
+        binding.tvNumItems.setText(String.valueOf(allItems));
+        return false;
+    }
+
 
     /**
      * Initialization and assignment for views
@@ -210,6 +243,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.tvFilter.setOnClickListener(this);
         binding.drawerLayout.addDrawerListener(toggle);
         binding.navView.setNavigationItemSelectedListener(this);
+        binding.searchView.setOnQueryTextListener(this);
     }
 
 

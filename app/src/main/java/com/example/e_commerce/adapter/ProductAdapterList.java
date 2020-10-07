@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,9 +26,12 @@ import com.example.e_commerce.utlis.Constants;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.ViewHolder> {
+public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.ViewHolder>
+        implements Filterable {
 
 
     /**
@@ -35,6 +40,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     private List<Datum> datumList;
     private Context context;
     private AppDatabase mDb;
+    List<Datum> datumListAll;
 
 
     /**
@@ -46,6 +52,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     public ProductAdapterList(Context context, List<Datum> datumList) {
         this.datumList = datumList;
         this.context = context;
+        datumListAll = new ArrayList<>(datumList);
     }
 
 
@@ -160,6 +167,46 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     public int getItemCount() {
         return datumList != null ? datumList.size() : 0;
     }
+
+
+    /**
+     * This method filter the results on search view widget
+     *
+     * @return a filter object
+     */
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    // Create a filter obj to use it
+    Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            // Create a list to add filtered data inside it
+            List<Datum> filteredList = new ArrayList<>();
+            // Check if the filtered list is empty or not
+            if (charSequence.toString().isEmpty()) {
+                filteredList.addAll(datumListAll);
+            } else {
+                for (Datum item : datumListAll) {
+                    if (item.getName().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            datumList.clear();
+            datumList.addAll((Collection<? extends Datum>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
 
     /**
