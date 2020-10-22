@@ -5,4 +5,4 @@
 <img src="images/6- more-details.jpeg" width="250">
 <img src="images/8-menu.jpeg" width="250">
 <img src="images/9-wishlist.jpeg" width="250">
-
+<img src="images/10-cart.jpeg" width="250">
