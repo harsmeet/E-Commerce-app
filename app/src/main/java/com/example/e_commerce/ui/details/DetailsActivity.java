@@ -6,7 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,17 +20,23 @@ import com.example.e_commerce.R;
 import com.example.e_commerce.adapter.CategoryAdapter;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.ActivityDetailsBinding;
+import com.example.e_commerce.ui.cart.CartActivity;
 import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utlis.SingletonClass;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
+
+    private static final String TAG = DetailsActivity.class.getSimpleName();
+    private static final String MyPREFERENCES = "PREFERENCE";
 
     /**
      * Initialization
@@ -39,12 +48,18 @@ public class DetailsActivity extends AppCompatActivity {
     String price;
     String caption;
     int categoryId;
+    private int qty;
     DetailsViewModel viewModel;
     CategoryAdapter adapter;
     LinearLayoutManager layoutManager;
     PhotoViewAttacher photoView;
     private ActivityDetailsBinding binding;
     private List<Datum> datumList;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+
+    SingletonClass singletonClass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +73,7 @@ public class DetailsActivity extends AppCompatActivity {
         initViews();
         // Update ui
         updateUI();
+        // Pass data to view model by category id
         viewModel.getAllProducts(String.valueOf(categoryId));
 
         // Observe the changes from live data
@@ -69,12 +85,31 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     @Override
+    public void onClick(View view) {
+        // Get id from view
+        int id = view.getId();
+
+        // Add button
+        if (id == R.id.btn_add) {
+            editQty("add");
+            // Sub button
+        } else if (id == R.id.btn_subtract) {
+            editQty("sub");
+            // Add to cart button
+        } else if (id == R.id.btn_add_cart) {
+            addToCart();
+            // Cart button
+        } else if (id == R.id.iv_cart_icon) {
+            startActivity(new Intent(DetailsActivity.this, CartActivity.class));
+        }
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.cart) {
-            Toast.makeText(this, "Cart", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -82,27 +117,64 @@ public class DetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu items
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        if (singletonClass.getCartCounter() >= 1) {
+            binding.cardView.setVisibility(View.VISIBLE);
+            binding.notificationNum.setText(String.valueOf(singletonClass.getCartCounter()));
+        }
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (singletonClass.getCartCounter() >= 1) {
+            binding.notificationNum.setText(String.valueOf(singletonClass.getCartCounter()));
+        }
+        if (singletonClass.getCartCounter() == 0) {
+            binding.notificationNum.setText("");
+            binding.cardView.setVisibility(View.INVISIBLE);
+        }
+        editor.putInt(Constants.QTY, singletonClass.getCartCounter());
+        editor.commit();
     }
 
 
     /**
      * Initialize the views
      */
+    @SuppressLint("CommitPrefEdits")
     private void initViews() {
         // Custom action bar
         setSupportActionBar(binding.toolBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        // Setup for intent
-        Intent intent = getIntent();
-        datum = intent.getParcelableExtra(Constants.INTENT_KEY);
-
-        // Double click to zoom on the photo
-        photoView = new PhotoViewAttacher(binding.ivProduct);
         // Setup for view model and data
         viewModel = new ViewModelProvider(this).get(DetailsViewModel.class);
         datumList = new ArrayList<>();
+
+        // Setup for shared preferences
+        preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        editor = preferences.edit();
+        // Setup for intent
+        Intent intent = getIntent();
+        datum = intent.getParcelableExtra(Constants.INTENT_KEY);
+        // Setup for recycler view
+        layoutManager = new LinearLayoutManager(DetailsActivity.this,
+                LinearLayoutManager.HORIZONTAL, false);
+        adapter = new CategoryAdapter(DetailsActivity.this, datumList);
+        qty = 1;
+
+        // Reference to singleton class
+        singletonClass = SingletonClass.getInstance();
+        // Reference to photo view attacher
+        photoView = new PhotoViewAttacher(binding.ivProduct);
+        // Register click listener
+        binding.btnAdd.setOnClickListener(this);
+        binding.btnSubtract.setOnClickListener(this);
+        binding.btnAddCart.setOnClickListener(this);
+        binding.ivCartIcon.setOnClickListener(this);
     }
 
 
@@ -137,10 +209,71 @@ public class DetailsActivity extends AppCompatActivity {
      */
     private void updateYouLike() {
         binding.loadingIndicator.setVisibility(View.INVISIBLE);
-        layoutManager = new LinearLayoutManager(DetailsActivity.this, LinearLayoutManager.HORIZONTAL, false);
         binding.recyclerView.setLayoutManager(layoutManager);
-        adapter = new CategoryAdapter(DetailsActivity.this, datumList);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapter);
+    }
+
+
+    /**
+     * Decrease or increase qty of products
+     */
+    private void editQty(String operation) {
+        // Add one qty per time
+        if (operation.equals("add")) {
+            binding.btnSubtract.setEnabled(true);
+            qty++;
+            binding.tvQty.setText(String.valueOf(qty));
+            if (qty == 2) {
+                binding.btnSubtract.setBackgroundResource(R.drawable.btn_subtract);
+            }
+
+            // Sub one qty per time
+        } else {
+            if (qty == 1) {
+                binding.btnSubtract.setEnabled(false);
+            } else {
+                qty--;
+                binding.tvQty.setText(String.valueOf(qty));
+                if (qty == 1) {
+                    binding.btnSubtract.setBackgroundResource(R.drawable.btn_subtract_min);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Add to cart and save to database
+     */
+    private void addToCart() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("id", String.valueOf(datum.getId()));
+        map.put("qty", String.valueOf(qty));
+        map.put("title", title);
+        map.put("price", price);
+        map.put("image", productImage);
+        map.put("category", category);
+        viewModel.getCartData(map);
+        Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+
+        // Displays counter for cart icon and save it
+        binding.cardView.setVisibility(View.VISIBLE);
+        int qty = Integer.parseInt(binding.tvQty.getText().toString());
+        if (binding.notificationNum.getText().toString().isEmpty()) {
+            binding.notificationNum.setText(String.valueOf(qty));
+            editor.putInt(Constants.QTY, qty);
+
+            // Pass counter of cart icon to update it in home activity
+            singletonClass.setCartCounter(qty);
+        } else {
+            int qtyInCart = Integer.parseInt(binding.notificationNum.getText().toString());
+            binding.notificationNum.setText(String.valueOf(qty + qtyInCart));
+            editor.putInt(Constants.QTY, qty + qtyInCart);
+
+            // Pass counter of cart icon to update it in home activity
+            singletonClass.setCartCounter(qty + qtyInCart);
+        }
+        editor.commit();
     }
 }

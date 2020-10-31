@@ -27,10 +27,60 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:title="Details">
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/iv_cart_icon"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_shopping_cart" />
 
 
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:visibility="invisible"
+                        app:cardBackgroundColor="@color/ColorBell"
+                        app:cardCornerRadius="10dp"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_cart_icon"
+                        app:layout_constraintTop_toTopOf="@+id/iv_cart_icon">
+
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/notification_num"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="3" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
 
 
@@ -104,7 +154,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_view_results" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_add_cart" />
 
         <View
             android:id="@+id/view4"
@@ -123,62 +173,62 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
-            android:text="Qty"
+            android:text="@string/qty"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/button"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_subtract"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            app:layout_constraintTop_toTopOf="@+id/btn_subtract" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_subtract"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
-            android:background="@color/grayCustom"
-            android:text="_"
-            app:layout_constraintEnd_toStartOf="@+id/textView12"
+            android:background="@drawable/btn_subtract_min"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintEnd_toStartOf="@+id/tv_qty"
             app:layout_constraintStart_toEndOf="@+id/textView9"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btn_add"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:background="@color/grayCustom"
-            android:text="+"
-            app:layout_constraintStart_toEndOf="@+id/textView12"
+            android:background="@drawable/btn_add"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintStart_toEndOf="@+id/tv_qty"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/tv_qty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1"
+            android:text="@string/_1"
             android:textColor="@color/black"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@+id/button2"
-            app:layout_constraintEnd_toStartOf="@+id/button2"
-            app:layout_constraintStart_toEndOf="@+id/button"
-            app:layout_constraintTop_toTopOf="@+id/button2" />
+            app:layout_constraintBottom_toBottomOf="@+id/btn_subtract"
+            app:layout_constraintEnd_toStartOf="@+id/btn_subtract"
+            app:layout_constraintStart_toEndOf="@+id/btn_subtract"
+            app:layout_constraintTop_toTopOf="@+id/btn_subtract" />
 
         <Button
-            android:id="@+id/btn_view_results"
+            android:id="@+id/btn_add_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/cartButton"
-            android:text="ADD TO CART"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/button_rounded"
+            android:text="@string/add_to_cart"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button2" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_subtract" />
 
         <TextView
             android:id="@+id/textView8"
@@ -224,7 +274,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="24dp"
-            android:text="You May also Like"
+            android:text="@string/you_may_also_like"
             android:textColor="@color/gray"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,5 +1,8 @@
 package com.example.e_commerce.utlis;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 public class Constants {
 
     // Keys for every request to server
@@ -12,5 +15,6 @@ public class Constants {
     public static final String MISSING = "Enter missing fields";
 
     // Intent key to pass data and retrieve it
-    public static final String INTENT_KEY = "key";
+    public static final String INTENT_KEY = "KEY";
+    public static final String QTY = "QTY";
 }

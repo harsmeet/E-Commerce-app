@@ -2,34 +2,42 @@ package com.example.e_commerce.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.e_commerce.R;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.data.database.AppExecutors;
+import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.ui.details.DetailsActivity;
+import com.example.e_commerce.ui.whishlist.WhishlistListener;
 import com.example.e_commerce.utlis.Constants;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.ViewHolder> {
+public class WhishlistAdapter extends RecyclerView.Adapter<WhishlistAdapter.ViewHolder> {
 
 
     /**
      * Initialization
      */
     private List<Datum> datumList;
-    private Context context;
+    Context context;
     private AppDatabase mDb;
+    WhishlistListener callBack;
 
 
     /**
@@ -37,8 +45,9 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
      *
      * @param context is a current context
      */
-    public FavouriteAdapter(Context context) {
+    public WhishlistAdapter(Context context, WhishlistListener callBack) {
         this.context = context;
+        this.callBack = callBack;
     }
 
 
@@ -64,7 +73,7 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_favourite, null,
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_whishlist, null,
                 false);
         // To adjust the size of CardView
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
@@ -87,25 +96,76 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Get position of current item
         Datum currentItem = datumList.get(position);
+
+        // Save the name on add to cart button
+        mDb = AppDatabase.getInstance(context);
         // Displays values on views
         holder.tvProductName.setText(currentItem.getName());
         holder.tvPrice.setText(currentItem.getPrice());
-
-        // Ger the url of the image
         String url = currentItem.getImages().get(0).getSrc();
         // Display the image by Picasso library
         Picasso.get()
                 .load(url)
                 .into(holder.iv_product_Fav);
 
+
+        // Click listener on add to cart button
+        holder.btnAddToCart.setOnClickListener(view -> {
+            // Get instance of database
+            mDb = AppDatabase.getInstance(context);
+            AppExecutors.getInstance().diskIO().execute(() -> {
+                // Insert the selected item to the database
+                Cart cart = mDb.roomDao().fetchInCart(currentItem.getName());
+                // if there's data saved in database.
+                if (cart != null) {
+                    cart.setQuantity(1);
+                    cart.setId(currentItem.getId());
+                    int qty = mDb.roomDao().getSum(cart.getQuantity(), cart.getId());
+                    cart.setQuantity(qty);
+                    mDb.roomDao().updateToCart(cart);
+
+                    // SnackBar setup
+                    Snackbar snackbar =
+                            Snackbar.make(holder.constraintLayout, "Item updated", Snackbar.LENGTH_LONG)
+                                    .setActionTextColor(Color.CYAN);
+                    snackbar.show();
+
+                } else {
+                    cart = new Cart();
+                    cart.setId(currentItem.getId());
+                    cart.setTitle(currentItem.getName());
+                    cart.setPrice(currentItem.getPrice());
+                    cart.setCategory(currentItem.getCategories().get(0).getName());
+                    cart.setImage(currentItem.getImages().get(0).getSrc());
+                    cart.setQuantity(1);
+
+                    // Save item to wishlist
+                    Cart finalCart = cart;
+                    AppExecutors.getInstance().diskIO().execute(() -> {
+                        // Insert the selected item to the database
+                        mDb.roomDao().insertToCart(finalCart);
+                    });
+
+                    // SnackBar setup
+                    Snackbar snackbar =
+                            Snackbar.make(holder.constraintLayout, R.string.added_to_cart, Snackbar.LENGTH_LONG)
+                                    .setActionTextColor(Color.CYAN);
+                    snackbar.show();
+                }
+            });
+            callBack.updateCartCounter();
+        });
+
+
         // Click listener on delete button
-        holder.ivDelete.setOnClickListener(view -> {
+        holder.ibDelete.setOnClickListener(view -> {
             mDb = AppDatabase.getInstance(context);
             AppExecutors.getInstance().diskIO().execute(() -> {
                 // Delete the selected item from the database
-                mDb.favouriteDao().deleteItem(datumList.get(position));
+                mDb.roomDao().deleteDatum(datumList.get(position));
             });
         });
+
 
         // Click listener on each item
         holder.itemView.setOnClickListener(view -> {
@@ -135,8 +195,10 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
         // Initialization
         private TextView tvProductName;
         private TextView tvPrice;
+        private Button btnAddToCart;
         private ImageView iv_product_Fav;
-        private ImageView ivDelete;
+        private ImageButton ibDelete;
+        private ConstraintLayout constraintLayout;
 
 
         /**
@@ -144,15 +206,17 @@ public class FavouriteAdapter extends RecyclerView.Adapter<FavouriteAdapter.View
          * views via binding class
          *
          * @param itemView The View that you inflated in
-         *                 {@link FavouriteAdapter#onCreateViewHolder(ViewGroup, int)}
+         *                 {@link WhishlistAdapter#onCreateViewHolder(ViewGroup, int)}
          */
         ViewHolder(View itemView) {
             super(itemView);
             // Find a reference for the views
             tvProductName = itemView.findViewById(R.id.tv_title);
             tvPrice = itemView.findViewById(R.id.tv_price);
+            btnAddToCart = itemView.findViewById(R.id.btn_add_to_cart);
             iv_product_Fav = itemView.findViewById(R.id.iv_product_Fav);
-            ivDelete = itemView.findViewById(R.id.iv_delete);
+            ibDelete = itemView.findViewById(R.id.ib_delete);
+            constraintLayout = itemView.findViewById(R.id.constraint_layout);
         }
     }
 }

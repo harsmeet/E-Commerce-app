@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.e_commerce.data.model.products.Datum;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class DetailsViewModel extends AndroidViewModel {
@@ -47,5 +48,15 @@ public class DetailsViewModel extends AndroidViewModel {
      */
     public void getAllProducts(String categoryId) {
         repo.getAllProducts(categoryId);
+    }
+
+
+    /**
+     * Pass data to repo to add data in cart
+     *
+     * @param map is hash map of cart data
+     */
+    public void getCartData(HashMap<String, String> map) {
+        repo.addToCart(map);
     }
 }

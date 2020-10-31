@@ -7,15 +7,16 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
 
 
-@Database(entities = {Datum.class}, version = 4, exportSchema = false)
+@Database(entities = {Datum.class, Cart.class}, version = 2, exportSchema = false)
 @TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final Object LOCK = new Object();
-    private static final String DATABASE_NAME = "Favourites";
+    private static final String DATABASE_NAME = "PRODUCTS";
     private static AppDatabase sInstance;
 
     public static AppDatabase getInstance(Context context) {
@@ -29,5 +30,5 @@ public abstract class AppDatabase extends RoomDatabase {
         return sInstance;
     }
 
-    public abstract FavouriteDao favouriteDao();
+    public abstract RoomDao roomDao();
 }

@@ -1,4 +1,4 @@
-package com.example.e_commerce.data.database;
+package com.example.e_commerce.ui.whishlist;
 
 import android.app.Application;
 
@@ -6,11 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.data.model.products.Datum;
 
 import java.util.List;
 
-public class FavouriteViewModel extends AndroidViewModel {
+public class WhishlistViewModel extends AndroidViewModel {
 
     /**
      * Wrapping the <list<Datum> with LiveData
@@ -24,10 +25,10 @@ public class FavouriteViewModel extends AndroidViewModel {
      *
      * @param application is an application context
      */
-    public FavouriteViewModel(@NonNull Application application) {
+    public WhishlistViewModel(@NonNull Application application) {
         super(application);
         AppDatabase dataBase = AppDatabase.getInstance(this.getApplication());
-        datumList = dataBase.favouriteDao().loadAllResults();
+        datumList = dataBase.roomDao().loadAllResults();
     }
 
 

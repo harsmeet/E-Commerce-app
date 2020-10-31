@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -19,9 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.e_commerce.R;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.data.database.AppExecutors;
+import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.ui.details.DetailsActivity;
-import com.example.e_commerce.ui.favourite.FavouriteActivity;
+import com.example.e_commerce.ui.home.HomeListener;
+import com.example.e_commerce.ui.whishlist.WhishlistActivity;
 import com.example.e_commerce.utlis.Constants;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
@@ -41,6 +44,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     private Context context;
     private AppDatabase mDb;
     List<Datum> datumListAll;
+    HomeListener callback;
 
 
     /**
@@ -49,10 +53,11 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
      * @param context   is a current context
      * @param datumList is a datum list
      */
-    public ProductAdapterList(Context context, List<Datum> datumList) {
+    public ProductAdapterList(Context context, List<Datum> datumList, HomeListener homeListener) {
         this.datumList = datumList;
         this.context = context;
         datumListAll = new ArrayList<>(datumList);
+        callback = homeListener;
     }
 
 
@@ -94,7 +99,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
         // Save the state of checkbox when checked
         mDb = AppDatabase.getInstance(context);
         AppExecutors.getInstance().diskIO().execute(() -> {
-            Datum datum = mDb.favouriteDao().fetchByName(currentItem.getName());
+            Datum datum = mDb.roomDao().fetchInDatum(currentItem.getName());
             // if there's data saved in database. set true on checkbox
             if (datum != null) {
                 holder.chFavourite.setChecked(true);
@@ -112,8 +117,53 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
         // Display the image by Picasso library
         Picasso.get()
                 .load(url)
-                .resize(250, 250)
                 .into(holder.ivProduct);
+
+
+        // Click listener on add to cart button
+        holder.btnAddToCart.setOnClickListener(view -> {
+            AppExecutors.getInstance().diskIO().execute(() -> {
+                // Insert the selected item to the database
+                Cart cart = mDb.roomDao().fetchInCart(currentItem.getName());
+                // if there's data saved in database.
+                if (cart != null) {
+                    cart.setQuantity(1);
+                    cart.setId(currentItem.getId());
+                    int qty = mDb.roomDao().getSum(cart.getQuantity(), cart.getId());
+                    cart.setQuantity(qty);
+                    mDb.roomDao().updateToCart(cart);
+
+                    // SnackBar setup
+                    Snackbar snackbar =
+                            Snackbar.make(holder.constraintLayout, "Item updated", Snackbar.LENGTH_LONG)
+                                    .setActionTextColor(Color.CYAN);
+                    snackbar.show();
+
+                } else {
+                    cart = new Cart();
+                    cart.setId(currentItem.getId());
+                    cart.setTitle(currentItem.getName());
+                    cart.setPrice(currentItem.getPrice());
+                    cart.setCategory(currentItem.getCategories().get(0).getName());
+                    cart.setImage(currentItem.getImages().get(0).getSrc());
+                    cart.setQuantity(1);
+
+                    // Save item to wishlist
+                    Cart finalCart = cart;
+                    AppExecutors.getInstance().diskIO().execute(() -> {
+                        // Insert the selected item to the database
+                        mDb.roomDao().insertToCart(finalCart);
+                    });
+
+                    // SnackBar setup
+                    Snackbar snackbar =
+                            Snackbar.make(holder.constraintLayout, R.string.added_to_cart, Snackbar.LENGTH_LONG)
+                                    .setActionTextColor(Color.CYAN);
+                    snackbar.show();
+                }
+            });
+            callback.updateCartCounter();
+        });
 
 
         // Click listener on favourite button
@@ -123,13 +173,13 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
                 mDb = AppDatabase.getInstance(context);
                 AppExecutors.getInstance().diskIO().execute(() -> {
                     // Insert the selected item to the database
-                    mDb.favouriteDao().insertItem(datumList.get(position));
+                    mDb.roomDao().insertItem(datumList.get(position));
                 });
                 // SnackBar setup
                 Snackbar snackbar =
                         Snackbar.make(holder.constraintLayout, R.string.add_wishlist, Snackbar.LENGTH_LONG)
                                 .setAction(R.string.see_list, view1 -> {
-                                    Intent intent = new Intent(context, FavouriteActivity.class);
+                                    Intent intent = new Intent(context, WhishlistActivity.class);
                                     context.startActivity(intent);
                                 }).setActionTextColor(Color.CYAN);
                 snackbar.show();
@@ -138,7 +188,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
                 mDb = AppDatabase.getInstance(context);
                 AppExecutors.getInstance().diskIO().execute(() -> {
                     // Delete the selected item from the database
-                    mDb.favouriteDao().deleteItem(datumList.get(position));
+                    mDb.roomDao().deleteDatum(datumList.get(position));
                 });
                 // SnackBar
                 Snackbar snackbar =
@@ -217,6 +267,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
         private TextView tvProductName;
         private TextView tvPrice;
         private TextView tvCategory;
+        private Button btnAddToCart;
         private ImageView ivProduct;
         private CheckBox chFavourite;
         private ConstraintLayout constraintLayout;
@@ -235,6 +286,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
             tvProductName = itemView.findViewById(R.id.tv_product_name);
             tvPrice = itemView.findViewById(R.id.tv_price);
             tvCategory = itemView.findViewById(R.id.tv_category);
+            btnAddToCart = itemView.findViewById(R.id.btn_add_to_cart);
             ivProduct = itemView.findViewById(R.id.iv_product);
             constraintLayout = itemView.findViewById(R.id.constraint_layout);
             chFavourite = itemView.findViewById(R.id.ch_favourite);

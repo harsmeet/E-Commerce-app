@@ -14,6 +14,6 @@
     <color name="customPrimary">#008cff</color>
     <color name="toolbar">#ECEFF1</color>
     <color name="ColorBell">#D81B60</color>
-
+    <color name="grayLight">#ECEFF1</color>
 
 </resources>

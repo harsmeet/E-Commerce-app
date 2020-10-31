@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,8 +27,11 @@ import com.example.e_commerce.adapter.ProductAdapterList;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.ActivityHomeBinding;
 import com.example.e_commerce.ui.auth.SignUpActivity;
-import com.example.e_commerce.ui.favourite.FavouriteActivity;
+import com.example.e_commerce.ui.cart.CartActivity;
+import com.example.e_commerce.ui.whishlist.WhishlistActivity;
 import com.example.e_commerce.ui.filter.FilterActivity;
+import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utlis.SingletonClass;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -36,12 +40,15 @@ import java.util.Objects;
 
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener,
-        NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
+        NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,
+        HomeListener {
 
 
     /**
      * Initialization
      */
+    private static final String TAG = HomeActivity.class.getSimpleName();
+
     private static final String MyPREFERENCES = "PREFERENCE";
     private static final String CATEGORY = "CATEGORY";
     private static final String ALL_PRODUCTS = "ALL_PRODUCTS";
@@ -50,6 +57,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private static final String GRID = "GRID";
     private static final String LIST = "LIST";
     private static final String VIEW_TYPE = "VIEW_TYPE";
+
 
     private ActionBarDrawerToggle toggle;
     private SharedPreferences preferences;
@@ -64,6 +72,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayoutManager linearLayoutManager;
     List<Datum> datumList;
     Datum datum;
+
+    SingletonClass singletonClass;
+    int savedQty;
 
 
     @Override
@@ -129,6 +140,41 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (singletonClass.getCartCounter() >= 1) {
+            binding.cardView.setVisibility(View.VISIBLE);
+            binding.notificationNum.setText(String.valueOf(singletonClass.getCartCounter()));
+        }
+        if (singletonClass.getCartCounter() == 0) {
+            binding.notificationNum.setText("");
+            binding.cardView.setVisibility(View.INVISIBLE);
+        }
+        editor.putInt(Constants.QTY, singletonClass.getCartCounter());
+        editor.commit();
+    }
+
+    @Override
+    public void updateCartCounter() {
+        // Show counter for cart icon
+        binding.cardView.setVisibility(View.VISIBLE);
+        // If cart counter is empty
+        if (binding.notificationNum.getText().toString().isEmpty()) {
+            binding.notificationNum.setText(String.valueOf(1));
+            editor.putInt(Constants.QTY, 1);
+            singletonClass.setCartCounter(1);
+
+        } else {
+            int qtyInCart = Integer.parseInt(binding.notificationNum.getText().toString());
+            binding.notificationNum.setText(String.valueOf(1 + qtyInCart));
+            editor.putInt(Constants.QTY, 1 + qtyInCart);
+            singletonClass.setCartCounter(1 + qtyInCart);
+        }
+        editor.commit();
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (toggle.onOptionsItemSelected(item)) {
             return true;
@@ -139,49 +185,49 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu items
         getMenuInflater().inflate(R.menu.menu, menu);
+
+        // If there's data saved in shared preference
+        if (savedQty >= 1) {
+            binding.cardView.setVisibility(View.VISIBLE);
+            // Displays qty on cart icon
+            binding.notificationNum.setText(String.valueOf(savedQty));
+        }
         return true;
     }
 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            // Grid button
-            case R.id.iv_grid:
-                displayGrid();
-                break;
+        int id = view.getId();
+        // Grid button
+        if (id == R.id.ib_grid) {
+            displayGrid();
             // List button
-            case R.id.iv_list:
-                displayList();
-                break;
+        } else if (id == R.id.ib_list) {
+            displayList();
             // Filter button
-            case R.id.tv_filter:
-                startActivity(new Intent(HomeActivity.this, FilterActivity.class));
-                break;
+        } else if (id == R.id.tv_filter) {
+            startActivity(new Intent(HomeActivity.this, FilterActivity.class));
+            // Cart
+        } else if (id == R.id.iv_cart_icon) {
+            startActivity(new Intent(HomeActivity.this, CartActivity.class));
         }
     }
 
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.profile) {
+            startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
 
-            case R.id.home:
-                Toast.makeText(HomeActivity.this, "Home", Toast.LENGTH_SHORT).show();
-                break;
+        } else if (itemId == R.id.info) {
+            Toast.makeText(getApplicationContext(), "Info", Toast.LENGTH_SHORT).show();
 
-            case R.id.profile:
-                startActivity(new Intent(HomeActivity.this, SignUpActivity.class));
-                break;
-
-            case R.id.info:
-                Toast.makeText(getApplicationContext(), "Info", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.wishlist:
-                startActivity(new Intent(HomeActivity.this, FavouriteActivity.class));
-                break;
+        } else if (itemId == R.id.wishlist) {
+            startActivity(new Intent(HomeActivity.this, WhishlistActivity.class));
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -212,10 +258,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Initialization and assignment for views
      */
+    @SuppressLint("CommitPrefEdits")
     private void initViews() {
         // Setup for toolbar
         setSupportActionBar(binding.toolBar);
-
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         // Start shimmer loading screen
         binding.shimmerFrame.startShimmer();
         binding.shimmerFrame.setVisibility(View.VISIBLE);
@@ -224,26 +271,36 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         datumList = new ArrayList<>();
         datum = new Datum();
 
-        // Setup for shared preferences and Room Database
+        // Setup for shared preferences
         preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         editor = preferences.edit();
-
         // Setup for navigation view
         toggle = new ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open_drawable, R.string.close_drawable);
         toggle.syncState();
         binding.navView.bringToFront();
-        // Custom action bar
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        // Setup for spinner adapter
-        initSpinnerAdapter();
 
-        // Click listener on views
-        binding.ivGrid.setOnClickListener(this);
-        binding.ivList.setOnClickListener(this);
+        // Setup for spinner adapter
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(HomeActivity.this,
+                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.names));
+        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinner.setAdapter(myAdapter);
+
+        singletonClass = SingletonClass.getInstance();
+        // Retrieve data saved in shared preference
+        savedQty = preferences.getInt(Constants.QTY, 0);
+        if (savedQty >= 1) {
+            singletonClass.setCartCounter(savedQty);
+        }
+
+
+        // Register click listener on views
+        binding.ibGrid.setOnClickListener(this);
+        binding.ibList.setOnClickListener(this);
         binding.tvFilter.setOnClickListener(this);
         binding.drawerLayout.addDrawerListener(toggle);
         binding.navView.setNavigationItemSelectedListener(this);
         binding.searchView.setOnQueryTextListener(this);
+        binding.ivCartIcon.setOnClickListener(this);
     }
 
 
@@ -252,7 +309,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void updateUi() {
         String view = preferences.getString(VIEW_TYPE, "");
-
         if (view.equals(LIST)) {
             binding.recyclerView.setVisibility(View.VISIBLE);
             binding.shimmerFrame.setVisibility(View.GONE);
@@ -275,9 +331,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Display the products in list view
      */
     private void displayList() {
+        binding.ibList.setImageResource(R.drawable.list_selected);
+        binding.ibGrid.setImageResource(R.drawable.grid_not_selected);
+
+        // Setup for recycler view
         linearLayoutManager = new LinearLayoutManager(HomeActivity.this);
         binding.recyclerView.setLayoutManager(linearLayoutManager);
-        adapterList = new ProductAdapterList(HomeActivity.this, datumList);
+        adapterList = new ProductAdapterList(HomeActivity.this, datumList, this);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapterList);
 
@@ -294,9 +354,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
      * Display the products in grid view
      */
     private void displayGrid() {
+        binding.ibGrid.setImageResource(R.drawable.grid_selected);
+        binding.ibList.setImageResource(R.drawable.list_not_selected);
+
+        // Setup for recycler view
         layoutManager = new GridLayoutManager(this, 2);
         binding.recyclerView.setLayoutManager(layoutManager);
-        adapter = new ProductAdapter(HomeActivity.this, datumList);
+        adapter = new ProductAdapter(HomeActivity.this, datumList, this);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapter);
 
@@ -306,17 +370,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Save in shared preferences
         editor.putString(VIEW_TYPE, GRID);
         editor.commit();
-    }
-
-
-    /**
-     * Setup adapter for spinner
-     */
-    private void initSpinnerAdapter() {
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(HomeActivity.this,
-                android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.names));
-        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinner.setAdapter(myAdapter);
     }
 
 

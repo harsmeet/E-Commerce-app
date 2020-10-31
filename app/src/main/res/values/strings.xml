@@ -21,11 +21,29 @@
     <string name="add_wishlist">Added to Wishlist</string>
     <string name="removed">Item removed</string>
     <string name="add_to_cart">ADD TO CART</string>
+    <string name="qty">Qty</string>
+    <string name="your_cart">Your Cart</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="shipping">Shipping</string>
+    <string name="taxes">Taxes</string>
+    <string name="total">Total</string>
+    <string name="continue_to_checkout">CONTINUE TO CHECKOUT</string>
+    <string name="back">BACK</string>
+    <string name="_1">1</string>
+    <string name="added_to_cart">Added to cart</string>
+    <string name="you_may_also_like">You May also Like</string>
+    <string name="dollar_sign">$</string>
+    <string name="remove">REMOVE</string>
+    <string name="item_added">Item already added</string>
+    <string name="cart_is_empty">Your cart is empty!</string>
+    <string name="add_items_shopping">Return back to add items.</string>
+    <string name="whishlist">Whishlist</string>
+    <string name="no_saved_items">No Saved Items.</string>
 
 
     <string-array name="names">
         <item>SORT</item>
-        <item>All products</item>
+        <item>Products</item>
         <item>Men</item>
         <item>Women</item>
     </string-array>
