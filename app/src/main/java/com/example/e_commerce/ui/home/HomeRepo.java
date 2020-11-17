@@ -8,13 +8,15 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.data.network.APIClient;
 import com.example.e_commerce.repository.GlobalRepo;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class HomeRepo extends GlobalRepo {
@@ -23,10 +25,9 @@ public class HomeRepo extends GlobalRepo {
     /**
      * Initialization
      */
-    private Context context;
-    private List<Datum> datumList;
-    private MutableLiveData<List<Datum>> listDatumResponse = new MutableLiveData<>();
-
+    final Context context;
+    private final MutableLiveData<List<Datum>> listDatumResponse = new MutableLiveData<>();
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     /**
      * Default constructor
@@ -34,7 +35,6 @@ public class HomeRepo extends GlobalRepo {
     public HomeRepo(Context context) {
         this.context = context;
     }
-
 
     /**
      * Get datum list from on response
@@ -47,45 +47,40 @@ public class HomeRepo extends GlobalRepo {
 
 
     /**
-     * Displays data via callback
+     * Displays all categories by retrofit via RxJava
      */
-    public void getAllProducts() {
-        APIClient.getINSTANCE().getApi().getProducts(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
-                31).enqueue(new Callback<List<Datum>>() {
-            @Override
-            public void onResponse(Call<List<Datum>> call, Response<List<Datum>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    datumList = response.body();
-                    listDatumResponse.setValue(datumList);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Datum>> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void getAllProducts(String maxPrice) {
+        Single<List<Datum>> observable = APIClient.getINSTANCE()
+                .getApi()
+                .getProducts(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
+                        31, maxPrice)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        // Wrap observable with composite disposable
+        compositeDisposable.add(observable.subscribe(listDatumResponse::setValue, this::toast));
     }
 
 
     /**
-     * Displays max price in products via callback
+     * Displays a specific category by retrofit via RxJava
      */
-    public void getCategory(String id) {
-        APIClient.getINSTANCE().getApi().getCategory(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
-                id, 30).enqueue(new Callback<List<Datum>>() {
-            @Override
-            public void onResponse(Call<List<Datum>> call, Response<List<Datum>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    datumList = response.body();
-                    listDatumResponse.setValue(datumList);
-                }
-            }
+    public void getCategory(String id, String maxPrice) {
+        @NonNull Single<List<Datum>> observable = APIClient.getINSTANCE()
+                .getApi()
+                .getCategory(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
+                        id, 30, maxPrice)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        // Wrap observable with composite disposable
+        compositeDisposable.add(observable.subscribe(listDatumResponse::setValue, this::toast));
+    }
 
-            @Override
-            public void onFailure(Call<List<Datum>> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    /**
+     * Toast message in case of failure response
+     *
+     * @param errorMess the error message from observer
+     */
+    private void toast(Throwable errorMess) {
+        Toast.makeText(context, errorMess.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

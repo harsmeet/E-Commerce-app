@@ -18,8 +18,8 @@ import com.example.e_commerce.adapter.WhishlistAdapter;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.databinding.ActivityWhishlistBinding;
 import com.example.e_commerce.ui.cart.CartActivity;
-import com.example.e_commerce.utlis.Constants;
-import com.example.e_commerce.utlis.SingletonClass;
+import com.example.e_commerce.utils.Constants;
+import com.example.e_commerce.utils.SingletonClass;
 
 import java.util.Objects;
 

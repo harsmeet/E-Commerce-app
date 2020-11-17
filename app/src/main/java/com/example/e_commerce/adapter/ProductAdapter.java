@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +20,7 @@ import com.example.e_commerce.databinding.LayoutProductsBinding;
 import com.example.e_commerce.ui.details.DetailsActivity;
 import com.example.e_commerce.ui.home.HomeListener;
 import com.example.e_commerce.ui.whishlist.WhishlistActivity;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
@@ -37,10 +36,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     /**
      * Initialization
      */
-    private List<Datum> datumList;
+    List<Datum> datumList;
     List<Datum> datumListAll;
     List<Cart> cartList;
-    private Context context;
+    Context context;
     private AppDatabase mDb;
     HomeListener callback;
 
@@ -91,17 +90,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         // Get position of current item
         Datum currentItem = datumList.get(position);
 
-        // Save the state of checkbox and cart button when clicked
+        // Save the state of checkbox
         mDb = AppDatabase.getInstance(context);
         AppExecutors.getInstance().diskIO().execute(() -> {
             Datum datum = mDb.roomDao().fetchInDatum(currentItem.getName());
             // if there's data saved in database.
-            if (datum != null) {
-                holder.binding.chFavourite.setChecked(true);
-
-            } else {
-                holder.binding.chFavourite.setChecked(false);
-            }
+            holder.binding.chFavourite.setChecked(datum != null);
         });
 
 
@@ -264,7 +258,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // Initialization
-        private LayoutProductsBinding binding;
+        LayoutProductsBinding binding;
 
 
         /**

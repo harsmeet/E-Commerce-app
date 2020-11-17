@@ -1,6 +1,7 @@
 package com.example.e_commerce.ui.home;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,6 +11,8 @@ import com.example.e_commerce.data.model.products.Datum;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 
 public class HomeViewModel extends AndroidViewModel {
 
@@ -17,8 +20,7 @@ public class HomeViewModel extends AndroidViewModel {
     /**
      * Initialization
      */
-    private HomeRepo repo;
-
+    HomeRepo repo;
 
     /**
      * Constructor for our class
@@ -30,7 +32,6 @@ public class HomeViewModel extends AndroidViewModel {
         repo = new HomeRepo(application);
     }
 
-
     /**
      * Get callback response
      *
@@ -40,19 +41,23 @@ public class HomeViewModel extends AndroidViewModel {
         return repo.getListDatumResponse();
     }
 
-
     /**
      * Init get request of products
      */
-    public void getAllProducts() {
-        repo.getAllProducts();
+    public void getAllProducts(String maxPrice) {
+        repo.getAllProducts(maxPrice);
     }
-
 
     /**
      * Init get request by category id
      */
-    public void getCategory(String id) {
-        repo.getCategory(id);
+    public void getCategory(String id, String maxPrice) {
+        repo.getCategory(id, maxPrice);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        repo.compositeDisposable.clear();
     }
 }

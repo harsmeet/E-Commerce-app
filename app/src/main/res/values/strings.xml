@@ -39,11 +39,14 @@
     <string name="add_items_shopping">Return back to add items.</string>
     <string name="whishlist">Whishlist</string>
     <string name="no_saved_items">No Saved Items.</string>
+    <string name="_50_110">50–110$</string>
+    <string name="_110_150">110–150$</string>
+    <string name="_200">+ 200$</string>
 
 
     <string-array name="names">
         <item>SORT</item>
-        <item>Products</item>
+        <item>All</item>
         <item>Men</item>
         <item>Women</item>
     </string-array>

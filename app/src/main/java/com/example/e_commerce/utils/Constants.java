@@ -1,7 +1,5 @@
-package com.example.e_commerce.utlis;
+package com.example.e_commerce.utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 
 public class Constants {
 

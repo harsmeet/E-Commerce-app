@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,9 +32,9 @@ import com.example.e_commerce.databinding.ActivityHomeBinding;
 import com.example.e_commerce.ui.auth.SignUpActivity;
 import com.example.e_commerce.ui.cart.CartActivity;
 import com.example.e_commerce.ui.whishlist.WhishlistActivity;
-import com.example.e_commerce.ui.filter.FilterActivity;
-import com.example.e_commerce.utlis.Constants;
-import com.example.e_commerce.utlis.SingletonClass;
+import com.example.e_commerce.utils.Constants;
+import com.example.e_commerce.utils.NetworkChangeReceiver;
+import com.example.e_commerce.utils.SingletonClass;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -76,6 +79,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     SingletonClass singletonClass;
     int savedQty;
 
+    BroadcastReceiver br = null;
+    IntentFilter filter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,21 +107,21 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // Edit visibility
+                binding.recyclerView.setVisibility(View.INVISIBLE);
+                binding.shimmerFrame.setVisibility(View.VISIBLE);
 
                 if (i == 1) {
-                    setupVisibility();
                     editor.putString(CATEGORY, ALL_PRODUCTS);
-                    viewModel.getAllProducts();
+                    viewModel.getAllProducts("");
 
                 } else if (i == 2) {
-                    setupVisibility();
                     editor.putString(CATEGORY, MEN);
-                    viewModel.getCategory("24");
+                    viewModel.getCategory("24", "");
 
                 } else if (i == 3) {
-                    setupVisibility();
                     editor.putString(CATEGORY, WOMEN);
-                    viewModel.getCategory("27");
+                    viewModel.getCategory("27", "");
                 }
                 editor.commit();
             }
@@ -138,18 +144,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(br);
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
+        // Check internet connection
+        filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        this.registerReceiver(br, filter);
+
+        // Update cart counter notification via singleton class.
+        // If there's data in singleton.
         if (singletonClass.getCartCounter() >= 1) {
             binding.cardView.setVisibility(View.VISIBLE);
             binding.notificationNum.setText(String.valueOf(singletonClass.getCartCounter()));
-        }
-        if (singletonClass.getCartCounter() == 0) {
+            // If there's no data in singleton
+        } else {
             binding.notificationNum.setText("");
             binding.cardView.setVisibility(View.INVISIBLE);
         }
+        // Save singleton data in shared preferences
         editor.putInt(Constants.QTY, singletonClass.getCartCounter());
         editor.commit();
     }
@@ -207,11 +226,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             // List button
         } else if (id == R.id.ib_list) {
             displayList();
-            // Filter button
-        } else if (id == R.id.tv_filter) {
-            startActivity(new Intent(HomeActivity.this, FilterActivity.class));
-            // Cart
-        } else if (id == R.id.iv_cart_icon) {
+        }
+        // Cart button
+        else if (id == R.id.iv_cart_icon) {
             startActivity(new Intent(HomeActivity.this, CartActivity.class));
         }
     }
@@ -280,11 +297,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         binding.navView.bringToFront();
 
         // Setup for spinner adapter
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(HomeActivity.this,
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(HomeActivity.this,
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.names));
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinner.setAdapter(myAdapter);
-
+        // init singleton
         singletonClass = SingletonClass.getInstance();
         // Retrieve data saved in shared preference
         savedQty = preferences.getInt(Constants.QTY, 0);
@@ -292,11 +309,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             singletonClass.setCartCounter(savedQty);
         }
 
+        // init broad cast receiver and filter
+        br = new NetworkChangeReceiver();
+        filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
         // Register click listener on views
         binding.ibGrid.setOnClickListener(this);
         binding.ibList.setOnClickListener(this);
-        binding.tvFilter.setOnClickListener(this);
         binding.drawerLayout.addDrawerListener(toggle);
         binding.navView.setNavigationItemSelectedListener(this);
         binding.searchView.setOnQueryTextListener(this);
@@ -333,7 +352,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void displayList() {
         binding.ibList.setImageResource(R.drawable.list_selected);
         binding.ibGrid.setImageResource(R.drawable.grid_not_selected);
-
         // Setup for recycler view
         linearLayoutManager = new LinearLayoutManager(HomeActivity.this);
         binding.recyclerView.setLayoutManager(linearLayoutManager);
@@ -356,7 +374,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void displayGrid() {
         binding.ibGrid.setImageResource(R.drawable.grid_selected);
         binding.ibList.setImageResource(R.drawable.list_not_selected);
-
         // Setup for recycler view
         layoutManager = new GridLayoutManager(this, 2);
         binding.recyclerView.setLayoutManager(layoutManager);
@@ -374,29 +391,20 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
 
     /**
-     * Show or hide visibility of views
-     */
-    private void setupVisibility() {
-        binding.shimmerFrame.setVisibility(View.VISIBLE);
-        binding.recyclerView.setVisibility(View.INVISIBLE);
-    }
-
-
-    /**
      * Retrieve data from shared preferences
      */
     private void retrieveData() {
         String value = preferences.getString(CATEGORY, "");
         switch (value) {
             case MEN:
-                viewModel.getCategory("24");
+                viewModel.getCategory("24", "");
                 break;
             case WOMEN:
-                viewModel.getCategory("27");
+                viewModel.getCategory("27", "");
                 break;
             case ALL_PRODUCTS:
             default:
-                viewModel.getAllProducts();
+                viewModel.getAllProducts("");
                 break;
         }
     }

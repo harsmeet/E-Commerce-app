@@ -1,4 +1,4 @@
-package com.example.e_commerce.utlis;
+package com.example.e_commerce.utils;
 
 import java.io.Serializable;
 
@@ -10,10 +10,10 @@ public class SingletonClass implements Serializable {
 
 
     //private constructor.
-    private SingletonClass(){
+    private SingletonClass() {
 
         //Prevent form the reflection api.
-        if (sSoleInstance != null){
+        if (sSoleInstance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
     }
@@ -33,6 +33,9 @@ public class SingletonClass implements Serializable {
         return getInstance();
     }
 
+    /**
+     * Getter @ Setter
+     */
     public int getCartCounter() {
         return cartCounter;
     }

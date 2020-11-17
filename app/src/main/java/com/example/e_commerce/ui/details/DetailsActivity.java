@@ -21,8 +21,8 @@ import com.example.e_commerce.adapter.CategoryAdapter;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.ActivityDetailsBinding;
 import com.example.e_commerce.ui.cart.CartActivity;
-import com.example.e_commerce.utlis.Constants;
-import com.example.e_commerce.utlis.SingletonClass;
+import com.example.e_commerce.utils.Constants;
+import com.example.e_commerce.utils.SingletonClass;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private static final String TAG = DetailsActivity.class.getSimpleName();
+//    private static final String TAG = DetailsActivity.class.getSimpleName();
     private static final String MyPREFERENCES = "PREFERENCE";
 
     /**
@@ -55,7 +55,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     PhotoViewAttacher photoView;
     private ActivityDetailsBinding binding;
     private List<Datum> datumList;
-    private SharedPreferences preferences;
+    SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
     SingletonClass singletonClass;
@@ -85,23 +85,17 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
 
     @Override
-    public void onClick(View view) {
-        // Get id from view
-        int id = view.getId();
-
-        // Add button
-        if (id == R.id.btn_add) {
-            editQty("add");
-            // Sub button
-        } else if (id == R.id.btn_subtract) {
-            editQty("sub");
-            // Add to cart button
-        } else if (id == R.id.btn_add_cart) {
-            addToCart();
-            // Cart button
-        } else if (id == R.id.iv_cart_icon) {
-            startActivity(new Intent(DetailsActivity.this, CartActivity.class));
+    protected void onResume() {
+        super.onResume();
+        if (singletonClass.getCartCounter() >= 1) {
+            binding.notificationNum.setText(String.valueOf(singletonClass.getCartCounter()));
         }
+        if (singletonClass.getCartCounter() == 0) {
+            binding.notificationNum.setText("");
+            binding.cardView.setVisibility(View.INVISIBLE);
+        }
+        editor.putInt(Constants.QTY, singletonClass.getCartCounter());
+        editor.commit();
     }
 
 
@@ -127,20 +121,27 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         return true;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (singletonClass.getCartCounter() >= 1) {
-            binding.notificationNum.setText(String.valueOf(singletonClass.getCartCounter()));
-        }
-        if (singletonClass.getCartCounter() == 0) {
-            binding.notificationNum.setText("");
-            binding.cardView.setVisibility(View.INVISIBLE);
-        }
-        editor.putInt(Constants.QTY, singletonClass.getCartCounter());
-        editor.commit();
-    }
 
+    @Override
+    public void onClick(View view) {
+        // Get id from view
+        int id = view.getId();
+
+        // Add button
+        if (id == R.id.btn_add) {
+            editQty("add");
+
+            // Sub button
+        } else if (id == R.id.btn_subtract) {
+            editQty("sub");
+            // Add to cart button
+        } else if (id == R.id.btn_add_cart) {
+            addToCart();
+            // Cart button
+        } else if (id == R.id.iv_cart_icon) {
+            startActivity(new Intent(DetailsActivity.this, CartActivity.class));
+        }
+    }
 
     /**
      * Initialize the views
@@ -160,10 +161,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         // Setup for intent
         Intent intent = getIntent();
         datum = intent.getParcelableExtra(Constants.INTENT_KEY);
-        // Setup for recycler view
-        layoutManager = new LinearLayoutManager(DetailsActivity.this,
-                LinearLayoutManager.HORIZONTAL, false);
-        adapter = new CategoryAdapter(DetailsActivity.this, datumList);
         qty = 1;
 
         // Reference to singleton class
@@ -208,6 +205,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
      * Update you may also like slider via live data
      */
     private void updateYouLike() {
+        // Setup for recycler view
+        layoutManager = new LinearLayoutManager(DetailsActivity.this,
+                LinearLayoutManager.HORIZONTAL, false);
+        adapter = new CategoryAdapter(DetailsActivity.this, datumList);
         binding.loadingIndicator.setVisibility(View.INVISIBLE);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setHasFixedSize(true);

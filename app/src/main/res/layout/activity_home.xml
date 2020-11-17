@@ -165,17 +165,6 @@
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
             app:queryHint="Search" />
 
-        <TextView
-            android:id="@+id/tv_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/filter"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/search_view" />
 
         <ImageButton
             android:id="@+id/ib_list"
@@ -205,7 +194,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@null"
-            app:layout_constraintEnd_toStartOf="@+id/tv_filter"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/search_view"
             tools:listitem="@android:layout/simple_list_item_1" />
 

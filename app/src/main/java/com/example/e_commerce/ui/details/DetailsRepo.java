@@ -1,7 +1,6 @@
 package com.example.e_commerce.ui.details;
 
 import android.content.Context;
-import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
@@ -12,14 +11,17 @@ import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.data.network.APIClient;
 import com.example.e_commerce.repository.GlobalRepo;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class DetailsRepo extends GlobalRepo {
 
@@ -27,18 +29,17 @@ public class DetailsRepo extends GlobalRepo {
     /**
      * Initialization
      */
-    Context context;
-    private List<Datum> datumList;
-    MutableLiveData<List<Datum>> listDatumResponse = new MutableLiveData<>();
-    AppDatabase mDb;
+    private final Context context;
+    private final MutableLiveData<List<Datum>> listDatumResponse = new MutableLiveData<>();
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private AppDatabase mDb;
 
-    int id;
-    int qty;
-    String title;
-    String price;
-    String image;
-    String category;
-
+    private int id;
+    private int qty;
+    private String title;
+    private String price;
+    private String image;
+    private String category;
 
     /**
      * Default constructor
@@ -59,26 +60,19 @@ public class DetailsRepo extends GlobalRepo {
 
 
     /**
-     * Displays data via callback
+     * Displays data by retrofit via RxJava
      *
      * @param categoryId is a category id
      */
     public void getAllProducts(String categoryId) {
-        APIClient.getINSTANCE().getApi().getCategory(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
-                categoryId, 30).enqueue(new Callback<List<Datum>>() {
-            @Override
-            public void onResponse(Call<List<Datum>> call, Response<List<Datum>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    datumList = response.body();
-                    listDatumResponse.setValue(datumList);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Datum>> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        @NonNull Single<List<Datum>> observable = APIClient.getINSTANCE()
+                .getApi()
+                .getCategory(Constants.CONSUMER_KEY, Constants.SECRET_KEY,
+                        categoryId, 30, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        // Wrap observable with composite disposable
+        compositeDisposable.add(observable.subscribe(listDatumResponse::setValue, this::toast));
     }
 
 
@@ -88,16 +82,17 @@ public class DetailsRepo extends GlobalRepo {
      * @param map is hash map of cart data
      */
     public void addToCart(HashMap<String, String> map) {
-        id = Integer.parseInt(map.get("id"));
-        qty = Integer.parseInt(map.get("qty"));
+        // Get map values and set it to variables
+        id = Integer.parseInt(Objects.requireNonNull(map.get("id")));
+        qty = Integer.parseInt(Objects.requireNonNull(map.get("qty")));
         title = map.get("title");
         price = map.get("price");
         image = map.get("image");
         category = map.get("category");
 
+        // Get instance of database
         mDb = AppDatabase.getInstance(context.getApplicationContext());
-
-
+        // Do operations in database in background thread
         AppExecutors.getInstance().diskIO().execute(() -> {
             Cart cart = mDb.roomDao().fetchInCart(title);
             if (cart != null) {
@@ -119,5 +114,14 @@ public class DetailsRepo extends GlobalRepo {
                 mDb.roomDao().insertToCart(cart);
             }
         });
+    }
+
+    /**
+     * Toast message in case of failure response
+     *
+     * @param errorMess the error message from observer
+     */
+    private void toast(Throwable errorMess) {
+        Toast.makeText(context, errorMess.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

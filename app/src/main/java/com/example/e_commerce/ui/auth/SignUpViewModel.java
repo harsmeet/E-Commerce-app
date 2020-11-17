@@ -16,7 +16,7 @@ public class SignUpViewModel extends AndroidViewModel {
     /**
      * Initialization
      */
-    private SignUpRepo repo;
+    private final SignUpRepo repo;
 
 
     /**

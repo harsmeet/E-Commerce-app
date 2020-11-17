@@ -1,5 +1,6 @@
 package com.example.e_commerce.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,7 +26,7 @@ import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.ui.details.DetailsActivity;
 import com.example.e_commerce.ui.home.HomeListener;
 import com.example.e_commerce.ui.whishlist.WhishlistActivity;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
@@ -40,8 +41,8 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     /**
      * Initialization
      */
-    private List<Datum> datumList;
-    private Context context;
+    List<Datum> datumList;
+    Context context;
     private AppDatabase mDb;
     List<Datum> datumListAll;
     HomeListener callback;
@@ -72,7 +73,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_products_list, null,
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.layout_products_list, null,
                 false);
         // To adjust the size of CardView
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
@@ -101,11 +102,7 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
         AppExecutors.getInstance().diskIO().execute(() -> {
             Datum datum = mDb.roomDao().fetchInDatum(currentItem.getName());
             // if there's data saved in database. set true on checkbox
-            if (datum != null) {
-                holder.chFavourite.setChecked(true);
-            } else {
-                holder.chFavourite.setChecked(false);
-            }
+            holder.chFavourite.setChecked(datum != null);
         });
 
         // Displays values on views
@@ -264,13 +261,13 @@ public class ProductAdapterList extends RecyclerView.Adapter<ProductAdapterList.
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // Initialization
-        private TextView tvProductName;
-        private TextView tvPrice;
-        private TextView tvCategory;
-        private Button btnAddToCart;
-        private ImageView ivProduct;
-        private CheckBox chFavourite;
-        private ConstraintLayout constraintLayout;
+        TextView tvProductName;
+        TextView tvPrice;
+        TextView tvCategory;
+        Button btnAddToCart;
+        ImageView ivProduct;
+        CheckBox chFavourite;
+        ConstraintLayout constraintLayout;
 
 
         /**

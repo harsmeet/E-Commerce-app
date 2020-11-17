@@ -152,7 +152,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             // Update bill total of all items
             billTotal += pricePerItem;
             callBack.setValue(String.valueOf(billTotal));
-            callBack.calcCounter(1,"add");
+            callBack.calcCounter(1, "add");
         });
 
 
@@ -188,7 +188,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 // Update bill total of all items
                 billTotal -= pricePerItem;
                 callBack.setValue(String.valueOf(billTotal));
-                callBack.calcCounter(1,"sub");
+                callBack.calcCounter(1, "sub");
             }
         });
 
@@ -207,7 +207,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 mDb.roomDao().deleteCart(cartList.get(position));
             });
             callBack.setValue(String.valueOf(billTotal - total));
-            callBack.calcCounter(currentItem.getQuantity(),"sub");
+            callBack.calcCounter(currentItem.getQuantity(), "sub");
         });
     }
 
@@ -229,7 +229,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // Initialization
-        private LayoutCartBinding binding;
+        LayoutCartBinding binding;
 
 
         /**

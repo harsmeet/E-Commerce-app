@@ -1,16 +1,19 @@
 package com.example.e_commerce.ui.auth;
 
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.e_commerce.data.model.register.Data;
 import com.example.e_commerce.repository.GlobalRepo;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 
 import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class SignUpRepo extends GlobalRepo {
 
@@ -19,9 +22,9 @@ public class SignUpRepo extends GlobalRepo {
      * Initialization
      */
     Data data = new Data();
-    private MutableLiveData<String> signUpResponse = new MutableLiveData<>();
+    private final MutableLiveData<String> signUpResponse = new MutableLiveData<>();
     String email;
-    String userName;
+    String password;
     String firstName;
     String lastName;
 
@@ -32,7 +35,6 @@ public class SignUpRepo extends GlobalRepo {
     public SignUpRepo() {
     }
 
-
     /**
      * Getter for sign up response
      *
@@ -42,7 +44,6 @@ public class SignUpRepo extends GlobalRepo {
         return signUpResponse;
     }
 
-
     /**
      * Upload sign up data to the server
      *
@@ -51,13 +52,13 @@ public class SignUpRepo extends GlobalRepo {
     public void uploadData(HashMap<String, String> map) {
         // Get and store hash map data
         email = map.get("email");
-        userName = map.get("userName");
+        password = map.get("password");
         firstName = map.get("firstName");
         lastName = map.get("lastName");
 
         // Set the values via model class
         data.setEmail(email);
-        data.setUsername(userName);
+        data.setUsername(password);
         data.setFirstName(firstName);
         data.setLastName(lastName);
 
@@ -67,26 +68,19 @@ public class SignUpRepo extends GlobalRepo {
             signUpResponse.setValue(Constants.MISSING);
 
         } else {
-            // Create a hash map object to pass it to interface method
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("consumer_key", Constants.CONSUMER_KEY);
-            hashMap.put("consumer_secret", Constants.CONSUMER_KEY);
-            hashMap.put("email", email);
-            hashMap.put("userName", userName);
-            hashMap.put("firstName", firstName);
-            hashMap.put("lastName", lastName);
-
             // Retrieve Callbacks from Retrofit.
-            getApiInterface().createCustomer(hashMap).enqueue(new Callback<Data>() {
+            getApiInterface().createCustomer(Constants.CONSUMER_KEY, Constants.SECRET_KEY, password,
+                    email, firstName, lastName).enqueue(new Callback<Data>() {
                 @Override
-                public void onResponse(Call<Data> call, Response<Data> response) {
+                public void onResponse(@NonNull Call<Data> call, @NonNull Response<Data> response) {
                     Data data = response.body();
-                    assert data != null;
-                    signUpResponse.setValue(Constants.SUCCESS);
+                    if (response.isSuccessful() && data != null) {
+                        signUpResponse.setValue(Constants.SUCCESS);
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<Data> call, Throwable t) {
+                public void onFailure(@NonNull Call<Data> call, @NonNull Throwable t) {
                     signUpResponse.setValue(Constants.FAILED);
                 }
             });

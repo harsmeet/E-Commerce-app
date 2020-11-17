@@ -44,7 +44,6 @@ public class Datum implements Parcelable {
     private List<Category> categories = null;
 
 
-
     /**
      * Default constructor
      */

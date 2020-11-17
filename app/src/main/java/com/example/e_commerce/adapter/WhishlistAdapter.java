@@ -1,5 +1,6 @@
 package com.example.e_commerce.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,11 +23,12 @@ import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.ui.details.DetailsActivity;
 import com.example.e_commerce.ui.whishlist.WhishlistListener;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
 
 public class WhishlistAdapter extends RecyclerView.Adapter<WhishlistAdapter.ViewHolder> {
 
@@ -73,7 +75,7 @@ public class WhishlistAdapter extends RecyclerView.Adapter<WhishlistAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_whishlist, null,
+        @SuppressLint("InflateParams") View view = LayoutInflater.from(context).inflate(R.layout.layout_whishlist, null,
                 false);
         // To adjust the size of CardView
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
@@ -193,12 +195,12 @@ public class WhishlistAdapter extends RecyclerView.Adapter<WhishlistAdapter.View
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // Initialization
-        private TextView tvProductName;
-        private TextView tvPrice;
-        private Button btnAddToCart;
-        private ImageView iv_product_Fav;
-        private ImageButton ibDelete;
-        private ConstraintLayout constraintLayout;
+        TextView tvProductName;
+        TextView tvPrice;
+        Button btnAddToCart;
+        ImageView iv_product_Fav;
+        ImageButton ibDelete;
+        ConstraintLayout constraintLayout;
 
 
         /**

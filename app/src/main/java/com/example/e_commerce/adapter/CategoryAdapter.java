@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.LayoutYouLikeBinding;
 import com.example.e_commerce.ui.details.DetailsActivity;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,8 +22,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     /**
      * Initialization
      */
-    private List<Datum> datumList;
-    private Context context;
+     List<Datum> datumList;
+     Context context;
 
 
     /**
@@ -106,7 +106,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
         // Initialization
-        private LayoutYouLikeBinding binding;
+         LayoutYouLikeBinding binding;
 
         /**
          * Constructor for our ViewHolder. Within this constructor, we get a reference to our

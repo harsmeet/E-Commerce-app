@@ -9,7 +9,7 @@ public class GlobalRepo {
     /**
      * Initialization
      */
-    private APIInterface apiInterface = APIClient.getINSTANCE().getApi();
+    private final APIInterface apiInterface = APIClient.getINSTANCE().getApi();
 
 
     /**

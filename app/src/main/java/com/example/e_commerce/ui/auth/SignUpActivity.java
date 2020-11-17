@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.example.e_commerce.R;
 import com.example.e_commerce.databinding.ActivitySignUpBinding;
 import com.example.e_commerce.ui.home.HomeActivity;
-import com.example.e_commerce.utlis.Constants;
+import com.example.e_commerce.utils.Constants;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -96,14 +96,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         binding.loadingIndicator.setVisibility(View.VISIBLE);
         // Extract the values from all views
         String email = Objects.requireNonNull(binding.etEmail.getEditText()).getText().toString().trim();
-        String userName = Objects.requireNonNull(binding.etUsername.getEditText()).getText().toString().trim();
+        String password = Objects.requireNonNull(binding.etUsername.getEditText()).getText().toString().trim();
         String firstName = Objects.requireNonNull(binding.etFirstName.getEditText()).getText().toString().trim();
         String lastName = Objects.requireNonNull(binding.etLastName.getEditText()).getText().toString().trim();
 
         // Create hashmap object of String
         HashMap<String, String> map = new HashMap<>();
         map.put("email", email);
-        map.put("userName", userName);
+        map.put("password", password);
         map.put("firstName", firstName);
         map.put("lastName", lastName);
 

@@ -15,7 +15,7 @@ public class Image implements Parcelable {
      */
     @SerializedName("id")
     @Expose
-    private int id;
+    int id;
     @SerializedName("src")
     @Expose
     private String src;
@@ -24,7 +24,7 @@ public class Image implements Parcelable {
     private String name;
     @SerializedName("alt")
     @Expose
-    private String alt;
+    String alt;
 
 
     /**

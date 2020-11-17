@@ -14,7 +14,7 @@ public class Converter {
 
     // Two converter methods for Image Class
     @TypeConverter
-    public static List<Image> fromStringImage(String value) {
+    public static List<Image> fromStringToImage(String value) {
         Type listType = new TypeToken<List<Image>>() {
         }.getType();
         return new Gson().fromJson(value, listType);
@@ -22,14 +22,13 @@ public class Converter {
 
     @TypeConverter
     public static String fromClassImage(List<Image> list) {
-        Gson gson = new Gson();
-        return gson.toJson(list);
+        return new Gson().toJson(list);
     }
 
 
     // Two converter methods for Category Class
     @TypeConverter
-    public static List<Category> fromStringCategory(String value) {
+    public static List<Category> fromStringToCategory(String value) {
         Type listType = new TypeToken<List<Category>>() {
         }.getType();
         return new Gson().fromJson(value, listType);
@@ -37,7 +36,6 @@ public class Converter {
 
     @TypeConverter
     public static String fromClassCategory(List<Category> list) {
-        Gson gson = new Gson();
-        return gson.toJson(list);
+        return new Gson().toJson(list);
     }
 }

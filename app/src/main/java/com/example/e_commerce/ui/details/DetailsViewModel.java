@@ -11,6 +11,7 @@ import com.example.e_commerce.data.model.products.Datum;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class DetailsViewModel extends AndroidViewModel {
 
 
@@ -58,5 +59,12 @@ public class DetailsViewModel extends AndroidViewModel {
      */
     public void getCartData(HashMap<String, String> map) {
         repo.addToCart(map);
+    }
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        repo.compositeDisposable.clear();
     }
 }

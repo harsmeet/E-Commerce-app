@@ -13,7 +13,7 @@ import com.example.e_commerce.R;
 import com.example.e_commerce.adapter.CartAdapter;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.databinding.ActivityCartBinding;
-import com.example.e_commerce.utlis.SingletonClass;
+import com.example.e_commerce.utils.SingletonClass;
 
 
 public class CartActivity extends AppCompatActivity implements CartListener, View.OnClickListener {
@@ -22,8 +22,8 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
     /**
      * Initialization
      */
-    private static final String TAG = CartActivity.class.getSimpleName();
 
+//    private static final String TAG = CartActivity.class.getSimpleName();
     private CartAdapter adapter;
     LinearLayoutManager layoutManager;
     AppDatabase appDatabase;
