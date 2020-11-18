@@ -28,6 +28,7 @@
     <string name="taxes">Taxes</string>
     <string name="total">Total</string>
     <string name="continue_to_checkout">CONTINUE TO CHECKOUT</string>
+    <string name="continue_to_payment">CONTINUE TO PAYMENT</string>
     <string name="back">BACK</string>
     <string name="_1">1</string>
     <string name="added_to_cart">Added to cart</string>
@@ -50,4 +51,15 @@
         <item>Men</item>
         <item>Women</item>
     </string-array>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="checkout">Checkout</string>
+    <string name="payment">Payment</string>
+    <string name="review">Review</string>
+    <string name="cart_details">Cart details</string>
+    <string name="address">Address</string>
+    <string name="post_code">Post code</string>
+    <string name="enter_zip">Enter Zip for City and State</string>
+    <string name="city">City</string>
+    <string name="country">Country</string>
+    <string name="phone_number">Phone Number</string>
 </resources>

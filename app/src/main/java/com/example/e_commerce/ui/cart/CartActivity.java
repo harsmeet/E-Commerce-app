@@ -5,14 +5,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.e_commerce.R;
 import com.example.e_commerce.adapter.CartAdapter;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.databinding.ActivityCartBinding;
+import com.example.e_commerce.ui.orders.OrdersActivity;
 import com.example.e_commerce.utils.SingletonClass;
 
 
@@ -58,7 +59,7 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
         if (id == R.id.btn_back) {
             super.onBackPressed();
         } else if (id == R.id.btn_to_checkout) {
-            Toast.makeText(this, "Demo", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(CartActivity.this, OrdersActivity.class));
         }
     }
 
