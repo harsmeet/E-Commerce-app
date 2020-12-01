@@ -104,8 +104,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         HashMap<String, String> map = new HashMap<>();
         map.put("email", email);
         map.put("password", password);
-        map.put("firstName", firstName);
-        map.put("lastName", lastName);
+        map.put("first_name", firstName);
+        map.put("last_name", lastName);
 
         // Pass hashmap object to view model
         viewModel.getData(map);

@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.e_commerce.R;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.data.database.AppExecutors;
-import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
+import com.example.e_commerce.data.model.products.LineItem;
 import com.example.e_commerce.databinding.LayoutProductsBinding;
 import com.example.e_commerce.ui.details.DetailsActivity;
 import com.example.e_commerce.ui.home.HomeListener;
@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
         implements Filterable {
 
 
@@ -38,7 +38,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
      */
     List<Datum> datumList;
     List<Datum> datumListAll;
-    List<Cart> cartList;
+    List<LineItem> lineItemList;
     Context context;
     private AppDatabase mDb;
     HomeListener callback;
@@ -50,11 +50,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
      * @param context   is a current context
      * @param datumList is a datum list
      */
-    public ProductAdapter(Context context, List<Datum> datumList, HomeListener callback) {
+    public HomeAdapter(Context context, List<Datum> datumList, HomeListener callback) {
         this.datumList = datumList;
         this.context = context;
         datumListAll = new ArrayList<>(datumList);
-        cartList = new ArrayList<>();
+        lineItemList = new ArrayList<>();
         this.callback = callback;
     }
 
@@ -115,14 +115,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.binding.btnAddToCart.setOnClickListener(view -> {
             // Get instance of app executor
             AppExecutors.getInstance().diskIO().execute(() -> {
-                Cart cart = mDb.roomDao().fetchInCart(currentItem.getName());
+                LineItem LineItem = mDb.roomDao().fetchInCart(currentItem.getName());
                 // if there's data saved in database.
-                if (cart != null) {
-                    cart.setQuantity(1);
-                    cart.setId(currentItem.getId());
-                    int qty = mDb.roomDao().getSum(cart.getQuantity(), cart.getId());
-                    cart.setQuantity(qty);
-                    mDb.roomDao().updateToCart(cart);
+                if (LineItem != null) {
+                    LineItem.setQuantity(1);
+                    LineItem.setProduct_id(currentItem.getId());
+                    int qty = mDb.roomDao().getSum(LineItem.getQuantity(), LineItem.getProduct_id());
+                    LineItem.setQuantity(qty);
+                    mDb.roomDao().updateToCart(LineItem);
 
                     // SnackBar setup
                     Snackbar snackbar =
@@ -131,20 +131,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
                     snackbar.show();
 
                 } else {
-                    cart = new Cart();
-                    cart.setId(currentItem.getId());
-                    cart.setTitle(currentItem.getName());
-                    cart.setPrice(currentItem.getPrice());
-                    cart.setCategory(currentItem.getCategories().get(0).getName());
-                    cart.setImage(currentItem.getImages().get(0).getSrc());
-                    cart.setQuantity(1);
+                    LineItem = new LineItem();
+                    LineItem.setProduct_id(currentItem.getId());
+                    LineItem.setName(currentItem.getName());
+                    LineItem.setPrice(Integer.parseInt(currentItem.getPrice()));
+                    LineItem.setCategory(currentItem.getCategories().get(0).getName());
+                    LineItem.setImage(currentItem.getImages().get(0).getSrc());
+                    LineItem.setQuantity(1);
 
                     // Save item to wishlist
                     mDb = AppDatabase.getInstance(context);
-                    Cart finalCart = cart;
+                    LineItem finalLineItem = LineItem;
                     AppExecutors.getInstance().diskIO().execute(() -> {
                         // Insert the selected item to the database
-                        mDb.roomDao().insertToCart(finalCart);
+                        mDb.roomDao().insertToCart(finalLineItem);
                     });
 
                     // SnackBar setup
@@ -266,7 +266,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
          * views via binding class
          *
          * @param bindingLayout The View that you inflated in
-         *                      {@link ProductAdapter#onCreateViewHolder(ViewGroup, int)}
+         *                      {@link HomeAdapter#onCreateViewHolder(ViewGroup, int)}
          */
         ViewHolder(@NonNull LayoutProductsBinding bindingLayout) {
             super(bindingLayout.getRoot());

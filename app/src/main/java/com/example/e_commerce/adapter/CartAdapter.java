@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.e_commerce.R;
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.data.database.AppExecutors;
-import com.example.e_commerce.data.model.products.Cart;
+import com.example.e_commerce.data.model.products.LineItem;
 import com.example.e_commerce.databinding.LayoutCartBinding;
 import com.example.e_commerce.ui.cart.CartListener;
 import com.squareup.picasso.Picasso;
@@ -23,7 +23,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     /**
      * Initialization
      */
-    private List<Cart> cartList;
+    private List<LineItem> lineItemList;
     Context context;
     private AppDatabase mDb;
     CartListener callBack;
@@ -47,10 +47,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     /**
      * Setter for List<Cart>
      *
-     * @param cartList is the list of data
+     * @param lineItemList is the list of data
      */
-    public void setCartList(List<Cart> cartList) {
-        this.cartList = cartList;
+    public void setLineItemList(List<LineItem> lineItemList) {
+        this.lineItemList = lineItemList;
         notifyDataSetChanged();
     }
 
@@ -85,12 +85,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         // Get position of current item
-        Cart currentItem = cartList.get(position);
+        LineItem currentItem = lineItemList.get(position);
         // Initialize Database
         mDb = AppDatabase.getInstance(context);
         // Displays values on views
-        holder.binding.tvTitle.setText(currentItem.getTitle());
-        holder.binding.tvPrice.setText(currentItem.getPrice());
+        holder.binding.tvTitle.setText(currentItem.getName());
+        holder.binding.tvPrice.setText(currentItem.getPrice() + "");
         holder.binding.tvCategoryCart.setText(currentItem.getCategory());
         holder.binding.tvQty.setText(String.valueOf(currentItem.getQuantity()));
         // Get url of the image
@@ -113,7 +113,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
         // Calculate total price based on quantity
         int qty = Integer.parseInt(holder.binding.tvQty.getText().toString());
-        int itemPrice = Integer.parseInt(currentItem.getPrice());
+        int itemPrice = currentItem.getPrice();
         int totalPrice = qty * itemPrice;
         // Update total price based on quantity
         holder.binding.tvPrice.setText(String.valueOf(totalPrice));
@@ -145,7 +145,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
             // Get total price and price per item from views
             total = Integer.parseInt(holder.binding.tvPrice.getText().toString());
-            pricePerItem = Integer.parseInt(currentItem.getPrice());
+            pricePerItem = currentItem.getPrice();
             // Update total price of current item
             total += pricePerItem;
             holder.binding.tvPrice.setText(String.valueOf(total));
@@ -181,7 +181,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 }
                 // Get total price and price per item
                 total = Integer.parseInt(holder.binding.tvPrice.getText().toString());
-                pricePerItem = Integer.parseInt(currentItem.getPrice());
+                pricePerItem = currentItem.getPrice();
                 // Update total price of current item
                 total -= pricePerItem;
                 holder.binding.tvPrice.setText(String.valueOf(total));
@@ -196,7 +196,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         // Click listener on Delete button
         holder.binding.ibDelete.setOnClickListener(view -> {
             // Calculate discount percentage from bill total
-            int price = Integer.parseInt(currentItem.getPrice());
+            int price = currentItem.getPrice();
             int total = price * currentItem.getQuantity();
 
             // Get instance from Executors
@@ -204,7 +204,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 // Get total bill from database
                 billTotal = mDb.roomDao().getMulti();
                 // Delete the selected item from the database
-                mDb.roomDao().deleteCart(cartList.get(position));
+                mDb.roomDao().deleteCart(lineItemList.get(position));
             });
             callBack.setValue(String.valueOf(billTotal - total));
             callBack.calcCounter(currentItem.getQuantity(), "sub");
@@ -220,7 +220,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
      */
     @Override
     public int getItemCount() {
-        return cartList != null ? cartList.size() : 0;
+        return lineItemList != null ? lineItemList.size() : 0;
     }
 
 

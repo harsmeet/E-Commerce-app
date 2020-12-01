@@ -7,11 +7,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
+import com.example.e_commerce.data.model.products.LineItem;
 
 
-@Database(entities = {Datum.class, Cart.class}, version = 2, exportSchema = false)
+@Database(entities = {Datum.class, LineItem.class}, version = 3, exportSchema = false)
 @TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {
 

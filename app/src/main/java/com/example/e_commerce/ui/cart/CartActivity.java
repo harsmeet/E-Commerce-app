@@ -7,14 +7,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 
 import com.example.e_commerce.R;
 import com.example.e_commerce.adapter.CartAdapter;
 import com.example.e_commerce.data.database.AppDatabase;
+import com.example.e_commerce.data.database.AppExecutors;
+import com.example.e_commerce.data.model.products.LineItem;
 import com.example.e_commerce.databinding.ActivityCartBinding;
 import com.example.e_commerce.ui.orders.OrdersActivity;
 import com.example.e_commerce.utils.SingletonClass;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CartActivity extends AppCompatActivity implements CartListener, View.OnClickListener {
@@ -24,7 +31,6 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
      * Initialization
      */
 
-//    private static final String TAG = CartActivity.class.getSimpleName();
     private CartAdapter adapter;
     LinearLayoutManager layoutManager;
     AppDatabase appDatabase;
@@ -47,8 +53,9 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
         updateUi();
         // Observe the changes from live data
         viewModel.getCartList().observe(CartActivity.this, data -> {
-            adapter.setCartList(data);
+            adapter.setLineItemList(data);
             editVisibility();
+            singletonClass.setLineItems(data);
         });
     }
 
@@ -59,7 +66,9 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
         if (id == R.id.btn_back) {
             super.onBackPressed();
         } else if (id == R.id.btn_to_checkout) {
-            startActivity(new Intent(CartActivity.this, OrdersActivity.class));
+            // Send cart list to shipping fragment
+            Intent intent = new Intent(CartActivity.this, OrdersActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -90,8 +99,8 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
         viewModel = new ViewModelProvider(CartActivity.this).get(CartViewModel.class);
         // Get an instance of database
         appDatabase = AppDatabase.getInstance(getApplicationContext());
+        // Reference to singleton class
         singletonClass = SingletonClass.getInstance();
-
         // Register click listener
         binding.btnBack.setOnClickListener(this);
         binding.btnToCheckout.setOnClickListener(this);

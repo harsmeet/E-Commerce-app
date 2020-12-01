@@ -1,6 +1,8 @@
 package com.example.e_commerce.ui.auth;
 
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -18,6 +20,7 @@ import retrofit2.Response;
 public class SignUpRepo extends GlobalRepo {
 
 
+    private static final String TAG = SignUpRepo.class.getSimpleName();
     /**
      * Initialization
      */
@@ -53,8 +56,8 @@ public class SignUpRepo extends GlobalRepo {
         // Get and store hash map data
         email = map.get("email");
         password = map.get("password");
-        firstName = map.get("firstName");
-        lastName = map.get("lastName");
+        firstName = map.get("first_name");
+        lastName = map.get("last_name");
 
         // Set the values via model class
         data.setEmail(email);
@@ -68,22 +71,28 @@ public class SignUpRepo extends GlobalRepo {
             signUpResponse.setValue(Constants.MISSING);
 
         } else {
-            // Retrieve Callbacks from Retrofit.
-            getApiInterface().createCustomer(Constants.CONSUMER_KEY, Constants.SECRET_KEY, password,
-                    email, firstName, lastName).enqueue(new Callback<Data>() {
-                @Override
-                public void onResponse(@NonNull Call<Data> call, @NonNull Response<Data> response) {
-                    Data data = response.body();
-                    if (response.isSuccessful() && data != null) {
-                        signUpResponse.setValue(Constants.SUCCESS);
-                    }
-                }
+            HashMap<String, String> newMap = new HashMap<>();
+            newMap.put("email", email);
+            newMap.put("password", password);
+            newMap.put("first_name", firstName);
+            newMap.put("last_name", lastName);
 
-                @Override
-                public void onFailure(@NonNull Call<Data> call, @NonNull Throwable t) {
-                    signUpResponse.setValue(Constants.FAILED);
-                }
-            });
+            // Retrieve Callbacks from Retrofit.
+            getApiInterface().createCustomer(Constants.CONSUMER_KEY, Constants.SECRET_KEY, newMap)
+                    .enqueue(new Callback<Data>() {
+                        @Override
+                        public void onResponse(@NonNull Call<Data> call, @NonNull Response<Data> response) {
+                            Data data = response.body();
+                            if (response.isSuccessful() && data != null) {
+                                signUpResponse.setValue(Constants.SUCCESS);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<Data> call, @NonNull Throwable t) {
+                            signUpResponse.setValue(Constants.FAILED);
+                        }
+                    });
         }
     }
 }

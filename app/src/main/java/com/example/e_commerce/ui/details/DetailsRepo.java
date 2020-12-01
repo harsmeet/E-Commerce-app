@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.e_commerce.data.database.AppDatabase;
 import com.example.e_commerce.data.database.AppExecutors;
-import com.example.e_commerce.data.model.products.Cart;
 import com.example.e_commerce.data.model.products.Datum;
+import com.example.e_commerce.data.model.products.LineItem;
 import com.example.e_commerce.data.network.APIClient;
 import com.example.e_commerce.repository.GlobalRepo;
 import com.example.e_commerce.utils.Constants;
@@ -37,7 +37,7 @@ public class DetailsRepo extends GlobalRepo {
     private int id;
     private int qty;
     private String title;
-    private String price;
+    private int price;
     private String image;
     private String category;
 
@@ -86,7 +86,7 @@ public class DetailsRepo extends GlobalRepo {
         id = Integer.parseInt(Objects.requireNonNull(map.get("id")));
         qty = Integer.parseInt(Objects.requireNonNull(map.get("qty")));
         title = map.get("title");
-        price = map.get("price");
+        price = Integer.parseInt(map.get("price"));
         image = map.get("image");
         category = map.get("category");
 
@@ -94,24 +94,24 @@ public class DetailsRepo extends GlobalRepo {
         mDb = AppDatabase.getInstance(context.getApplicationContext());
         // Do operations in database in background thread
         AppExecutors.getInstance().diskIO().execute(() -> {
-            Cart cart = mDb.roomDao().fetchInCart(title);
-            if (cart != null) {
-                cart.setQuantity(qty);
-                cart.setId(id);
-                int qty = mDb.roomDao().getSum(cart.getQuantity(), cart.getId());
-                cart.setQuantity(qty);
-                mDb.roomDao().updateToCart(cart);
+            LineItem LineItem = mDb.roomDao().fetchInCart(title);
+            if (LineItem != null) {
+                LineItem.setQuantity(qty);
+                LineItem.setProduct_id(id);
+                int qty = mDb.roomDao().getSum(LineItem.getQuantity(), LineItem.getProduct_id());
+                LineItem.setQuantity(qty);
+                mDb.roomDao().updateToCart(LineItem);
 
             } else {
-                cart = new Cart();
-                cart.setId(id);
-                cart.setQuantity(qty);
-                cart.setTitle(title);
-                cart.setPrice(price);
-                cart.setImage(image);
-                cart.setCategory(category);
+                LineItem = new LineItem();
+                LineItem.setProduct_id(id);
+                LineItem.setQuantity(qty);
+                LineItem.setName(title);
+                LineItem.setPrice(price);
+                LineItem.setImage(image);
+                LineItem.setCategory(category);
                 // Insert the selected item to the database
-                mDb.roomDao().insertToCart(cart);
+                mDb.roomDao().insertToCart(LineItem);
             }
         });
     }

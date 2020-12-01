@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.e_commerce.data.database.AppDatabase;
-import com.example.e_commerce.data.model.products.Cart;
+import com.example.e_commerce.data.model.products.LineItem;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class CartViewModel extends AndroidViewModel {
      * Wrapping the <list<Cart> with LiveData
      * to avoid requiring the data every time
      **/
-    LiveData<List<Cart>> cartList;
+    LiveData<List<LineItem>> cartList;
 
 
     /**
@@ -40,7 +40,7 @@ public class CartViewModel extends AndroidViewModel {
      *
      * @return cart list
      */
-    public LiveData<List<Cart>> getCartList() {
+    public LiveData<List<LineItem>> getCartList() {
         return cartList;
     }
 }

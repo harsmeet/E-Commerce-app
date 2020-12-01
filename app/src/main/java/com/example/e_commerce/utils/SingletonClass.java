@@ -1,12 +1,16 @@
 package com.example.e_commerce.utils;
 
+import com.example.e_commerce.data.model.products.LineItem;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class SingletonClass implements Serializable {
 
 
     private static volatile SingletonClass sSoleInstance;
     private int cartCounter;
+    List<LineItem> lineItems;
 
 
     //private constructor.
@@ -24,7 +28,6 @@ public class SingletonClass implements Serializable {
                 if (sSoleInstance == null) sSoleInstance = new SingletonClass();
             }
         }
-
         return sSoleInstance;
     }
 
@@ -32,6 +35,9 @@ public class SingletonClass implements Serializable {
     protected SingletonClass readResolve() {
         return getInstance();
     }
+
+
+
 
     /**
      * Getter @ Setter
@@ -42,5 +48,14 @@ public class SingletonClass implements Serializable {
 
     public void setCartCounter(int cartCounter) {
         this.cartCounter = cartCounter;
+    }
+
+
+    public List<LineItem> getLineItems() {
+        return lineItems;
+    }
+
+    public void setLineItems(List<LineItem> lineItems) {
+        this.lineItems = lineItems;
     }
 }

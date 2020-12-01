@@ -1,8 +1,10 @@
 package com.example.e_commerce.data.network;
 
 
+import com.example.e_commerce.data.model.orderDetails.OrderDatum;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.data.model.register.Data;
+import com.example.e_commerce.data.model.shipping.ShippingMethod;
 
 
 import java.util.HashMap;
@@ -10,7 +12,6 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -19,17 +20,21 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
 
-//    @POST("customers")
-//    Call<Data> createCustomer(@Body HashMap<String, String> map);
+    @POST("orders")
+    Call<OrderDatum> createOrder(@Query("consumer_key") String key,
+                                 @Query("consumer_secret") String secret,
+                                 @Body OrderDatum orderData);
 
 
     @POST("customers")
     Call<Data> createCustomer(@Query("consumer_key") String key,
                               @Query("consumer_secret") String secret,
-                              @Query("password") String password,
-                              @Query("email") String email,
-                              @Query("first_name") String firstName,
-                              @Query("last_name") String lastName);
+                              @Body HashMap<String, String> map);
+
+
+    @GET("shipping_methods")
+    Call<List<ShippingMethod>> getShippingMethods(@Query("consumer_key") String key,
+                                                  @Query("consumer_secret") String secret);
 
 
     @GET("products")

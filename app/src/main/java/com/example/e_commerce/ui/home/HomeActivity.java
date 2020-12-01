@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +26,8 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.e_commerce.R;
-import com.example.e_commerce.adapter.ProductAdapter;
-import com.example.e_commerce.adapter.ProductAdapterList;
+import com.example.e_commerce.adapter.HomeAdapter;
+import com.example.e_commerce.adapter.HomeAdapterList;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.databinding.ActivityHomeBinding;
 import com.example.e_commerce.ui.auth.SignUpActivity;
@@ -69,8 +70,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     ActivityHomeBinding binding;
     HomeViewModel viewModel;
-    ProductAdapter adapter;
-    ProductAdapterList adapterList;
+    HomeAdapter adapter;
+    HomeAdapterList adapterList;
     GridLayoutManager layoutManager;
     LinearLayoutManager linearLayoutManager;
     List<Datum> datumList;
@@ -355,7 +356,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Setup for recycler view
         linearLayoutManager = new LinearLayoutManager(HomeActivity.this);
         binding.recyclerView.setLayoutManager(linearLayoutManager);
-        adapterList = new ProductAdapterList(HomeActivity.this, datumList, this);
+        adapterList = new HomeAdapterList(HomeActivity.this, datumList, this);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapterList);
 
@@ -377,7 +378,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // Setup for recycler view
         layoutManager = new GridLayoutManager(this, 2);
         binding.recyclerView.setLayoutManager(layoutManager);
-        adapter = new ProductAdapter(HomeActivity.this, datumList, this);
+        adapter = new HomeAdapter(HomeActivity.this, datumList, this);
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setAdapter(adapter);
 

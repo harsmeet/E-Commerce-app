@@ -29,9 +29,10 @@
     <string name="total">Total</string>
     <string name="continue_to_checkout">CONTINUE TO CHECKOUT</string>
     <string name="continue_to_payment">CONTINUE TO PAYMENT</string>
+    <string name="continue_to_review">CONTINUE TO REVIEW</string>
     <string name="back">BACK</string>
     <string name="_1">1</string>
-    <string name="added_to_cart">Added to cart</string>
+    <string name="added_to_cart">Added to LineItem</string>
     <string name="you_may_also_like">You May also Like</string>
     <string name="dollar_sign">$</string>
     <string name="remove">REMOVE</string>
@@ -62,4 +63,7 @@
     <string name="city">City</string>
     <string name="country">Country</string>
     <string name="phone_number">Phone Number</string>
+    <string name="shipping_method">Shipping Method</string>
+    <string name="credit_card">Credit or Debit Card</string>
+    <string name="caption_credit_card"><![CDATA[Enter card number, expiration date & CVV number]]></string>
 </resources>
