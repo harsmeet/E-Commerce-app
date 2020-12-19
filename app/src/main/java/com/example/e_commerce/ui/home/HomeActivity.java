@@ -16,7 +16,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +50,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Initialization
      */
-    private static final String TAG = HomeActivity.class.getSimpleName();
 
     private static final String MyPREFERENCES = "PREFERENCE";
     private static final String CATEGORY = "CATEGORY";
@@ -67,7 +65,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private int allItems;
-
     ActivityHomeBinding binding;
     HomeViewModel viewModel;
     HomeAdapter adapter;
@@ -76,10 +73,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     LinearLayoutManager linearLayoutManager;
     List<Datum> datumList;
     Datum datum;
-
     SingletonClass singletonClass;
     int savedQty;
-
     BroadcastReceiver br = null;
     IntentFilter filter;
 
@@ -397,15 +392,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private void retrieveData() {
         String value = preferences.getString(CATEGORY, "");
         switch (value) {
-            case MEN:
-                viewModel.getCategory("24", "");
-                break;
             case WOMEN:
                 viewModel.getCategory("27", "");
                 break;
             case ALL_PRODUCTS:
-            default:
                 viewModel.getAllProducts("");
+                break;
+            case MEN:
+            default:
+                viewModel.getCategory("24", "");
                 break;
         }
     }

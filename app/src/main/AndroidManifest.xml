@@ -12,14 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name=".ui.orders.finish.FinishActivity" />
         <activity
             android:name=".ui.orders.OrdersActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
-
         <activity
             android:name=".ui.cart.CartActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.whishlist.WhishlistActivity" />
+        <activity
+            android:name=".ui.whishlist.WhishlistActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.details.DetailsActivity"
             android:screenOrientation="portrait" />
@@ -28,6 +32,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.auth.SignUpActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/CustomTheme" />
         <activity android:name=".ui.SplashActivity">
             <intent-filter>

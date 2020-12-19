@@ -1,5 +1,6 @@
 
-package com.example.e_commerce.data.model.orderDetails;
+package com.example.e_commerce.data.model.order;
+
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -40,7 +41,8 @@ public class Billing {
     @Expose
     private String phone;
 
-    public Billing(String firstName, String lastName, String address1, String city, String postcode, String country, String email, String phone) {
+    public Billing(String firstName, String lastName, String address1, String city, String postcode,
+                   String country, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address1 = address1;

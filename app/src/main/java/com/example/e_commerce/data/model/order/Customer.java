@@ -1,10 +1,10 @@
 
-package com.example.e_commerce.data.model.orderDetails;
+package com.example.e_commerce.data.model.order;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Collection {
+public class Customer {
 
     @SerializedName("href")
     @Expose

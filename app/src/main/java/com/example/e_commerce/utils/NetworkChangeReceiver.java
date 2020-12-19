@@ -16,7 +16,6 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-//            Toast.makeText(context, "You're online", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "You're offline", Toast.LENGTH_SHORT).show();
         }

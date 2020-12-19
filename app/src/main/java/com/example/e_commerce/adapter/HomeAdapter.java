@@ -108,6 +108,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder>
         // Display the image by Picasso library
         Picasso.get()
                 .load(url)
+                .placeholder(R.drawable.progress_animation)
                 .into(holder.binding.ivProduct);
 
 

@@ -114,6 +114,7 @@ public class HomeAdapterList extends RecyclerView.Adapter<HomeAdapterList.ViewHo
         // Display the image by Picasso library
         Picasso.get()
                 .load(url)
+                .placeholder(R.drawable.progress_animation)
                 .into(holder.ivProduct);
 
 

@@ -56,7 +56,6 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
     implementation "com.github.akarnokd:rxjava3-retrofit-adapter:3.0.0"
 
-
     // Room
     implementation "androidx.room:room-runtime:2.2.5"
     annotationProcessor "androidx.room:room-compiler:2.2.5"
@@ -69,4 +68,7 @@ dependencies {
 
     // PhotoView
     implementation 'com.github.chrisbanes:PhotoView:1.2.6'
+
+    // DotsLoader
+    implementation 'com.agrawalsuneet.androidlibs:dotsloader:1.4'
 }

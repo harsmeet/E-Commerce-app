@@ -1,10 +1,9 @@
 package com.example.e_commerce.data.network;
 
 
-import com.example.e_commerce.data.model.orderDetails.OrderDatum;
+import com.example.e_commerce.data.model.order.OrderDatum;
 import com.example.e_commerce.data.model.products.Datum;
 import com.example.e_commerce.data.model.register.Data;
-import com.example.e_commerce.data.model.shipping.ShippingMethod;
 
 
 import java.util.HashMap;
@@ -30,11 +29,6 @@ public interface APIInterface {
     Call<Data> createCustomer(@Query("consumer_key") String key,
                               @Query("consumer_secret") String secret,
                               @Body HashMap<String, String> map);
-
-
-    @GET("shipping_methods")
-    Call<List<ShippingMethod>> getShippingMethods(@Query("consumer_key") String key,
-                                                  @Query("consumer_secret") String secret);
 
 
     @GET("products")

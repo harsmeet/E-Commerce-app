@@ -4,30 +4,27 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.e_commerce.data.model.orderDetails.Billing;
-import com.example.e_commerce.data.model.orderDetails.OrderDatum;
-import com.example.e_commerce.data.model.orderDetails.Shipping;
-import com.example.e_commerce.data.model.products.LineItem;
+import com.example.e_commerce.R;
+import com.example.e_commerce.data.model.order.Billing;
+import com.example.e_commerce.data.model.order.Shipping;
 import com.example.e_commerce.databinding.FragmentPaymentBinding;
+import com.example.e_commerce.ui.orders.review.ReviewFragment;
 import com.example.e_commerce.utils.SingletonClass;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PaymentFragment extends Fragment {
+public class PaymentFragment extends Fragment implements View.OnClickListener {
 
 
     /**
@@ -35,6 +32,9 @@ public class PaymentFragment extends Fragment {
      */
     FragmentPaymentBinding binding;
     private PaymentViewModel viewModel;
+    ReviewFragment reviewFragment;
+    FragmentTransaction fr;
+    private String paymentMethod = "";
     Bundle bundle;
     String email;
     String firstName;
@@ -44,10 +44,10 @@ public class PaymentFragment extends Fragment {
     String city;
     String country;
     String phoneNumber;
-    String shippingMethod;
     Billing billing;
     Shipping shipping;
     SingletonClass singletonClass;
+    int cashState = 1;
 
 
     /**
@@ -67,20 +67,22 @@ public class PaymentFragment extends Fragment {
         // Setup for view model
         viewModel = new ViewModelProvider(Objects.requireNonNull(getActivity()))
                 .get(PaymentViewModel.class);
-        // Update ui
         updateUi();
         // Observe the changes from live data
-
         viewModel.getResponse().observe(getViewLifecycleOwner(), orderDatum -> {
+            // Hide loading icon
+            binding.loadingIndicator.setVisibility(View.INVISIBLE);
+            Toast.makeText(getContext(), "Order updated successfully",
+                    Toast.LENGTH_SHORT).show();
+
+            // Go to review fragment
+            bundle.putParcelable("order_data", orderDatum);
+            reviewFragment.setArguments(bundle);
+            fr = getParentFragmentManager().beginTransaction();
+            fr.replace(R.id.fragment_container, reviewFragment);
+            fr.commit();
         });
 
-
-        // Click listener on payment button
-        binding.btnToPayment.setOnClickListener(v ->
-                viewModel.passData(billing, shipping, "Cash on delivery",
-                        singletonClass.getLineItems()));
-
-        // Return root view
         return binding.getRoot();
     }
 
@@ -89,7 +91,12 @@ public class PaymentFragment extends Fragment {
      * Update ui to user
      */
     private void updateUi() {
+        binding.btnCash.setOnClickListener(this);
+        binding.btnToReview.setOnClickListener(this);
         singletonClass = SingletonClass.getInstance();
+        reviewFragment = new ReviewFragment();
+        // Displays cart details
+        binding.tvCartDetails.setText(String.valueOf(singletonClass.getBillTotal()));
         // Get bundle data
         bundle = this.getArguments();
         if (bundle != null) {
@@ -101,17 +108,44 @@ public class PaymentFragment extends Fragment {
             city = bundle.getString("city");
             country = bundle.getString("country");
             phoneNumber = bundle.getString("phone_number");
-            shippingMethod = bundle.getString("shipping_method");
         }
 
-//        Billing billing = new Billing(firstName, lastName, address, city, postCode, country, email,
-//                phoneNumber);
-//        Shipping shipping = new Shipping(firstName,lastName,address,city,postCode,country);
+        // Pass data to constructors
+        billing = new Billing(firstName, lastName, address, city, postCode, country, email,
+                phoneNumber);
+        shipping = new Shipping(firstName, lastName, address, city, postCode, country);
+    }
 
-        billing = new Billing("Said", "Ali", "zone19",
-                "Cairo", "12345", "Egypt", "mhamod66@gmail.com",
-                "01115444987");
-        shipping = new Shipping("Said", "Ali", "zone19",
-                "Cairo", "12345", "Egypt");
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        // Cash on delivery button
+        if (id == R.id.btn_cash) {
+            if (cashState == 2) {
+                binding.tvConfirmCash.setVisibility(View.GONE);
+                binding.tvCashActivated.setVisibility(View.GONE);
+                binding.btnToReview.setBackgroundResource(R.drawable.button_rounded);
+                paymentMethod = getString(R.string.stripe);
+                cashState = 1;
+            } else {
+                binding.tvConfirmCash.setVisibility(View.VISIBLE);
+                binding.tvCashActivated.setVisibility(View.VISIBLE);
+                binding.btnToReview.setBackgroundResource(R.drawable.button_rounded_full);
+                paymentMethod = getString(R.string.cash_activated);
+                cashState++;
+            }
+            // Review button
+        } else {
+            binding.loadingIndicator.setVisibility(View.VISIBLE);
+            if (paymentMethod.equals("Cash on delivery")) {
+                paymentMethod = getString(R.string.cash_activated);
+            } else {
+                paymentMethod = getString(R.string.stripe);
+            }
+            // Pass data to view model.
+            // Credit card test mode only.
+            viewModel.passData(billing, shipping, paymentMethod,
+                    singletonClass.getLineItems(), "4242424242424242");
+        }
     }
 }

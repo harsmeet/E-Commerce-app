@@ -1,7 +1,6 @@
 package com.example.e_commerce.ui.auth;
 
 
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -20,7 +19,6 @@ import retrofit2.Response;
 public class SignUpRepo extends GlobalRepo {
 
 
-    private static final String TAG = SignUpRepo.class.getSimpleName();
     /**
      * Initialization
      */

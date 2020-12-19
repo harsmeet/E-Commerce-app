@@ -10,12 +10,12 @@ public class SingletonClass implements Serializable {
 
     private static volatile SingletonClass sSoleInstance;
     private int cartCounter;
+    private int billTotal;
     List<LineItem> lineItems;
 
 
     //private constructor.
     private SingletonClass() {
-
         //Prevent form the reflection api.
         if (sSoleInstance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
@@ -37,8 +37,6 @@ public class SingletonClass implements Serializable {
     }
 
 
-
-
     /**
      * Getter @ Setter
      */
@@ -57,5 +55,13 @@ public class SingletonClass implements Serializable {
 
     public void setLineItems(List<LineItem> lineItems) {
         this.lineItems = lineItems;
+    }
+
+    public int getBillTotal() {
+        return billTotal;
+    }
+
+    public void setBillTotal(int billTotal) {
+        this.billTotal = billTotal;
     }
 }

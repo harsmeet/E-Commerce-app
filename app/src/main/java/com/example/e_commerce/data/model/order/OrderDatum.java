@@ -1,5 +1,8 @@
 
-package com.example.e_commerce.data.model.orderDetails;
+package com.example.e_commerce.data.model.order;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.List;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.example.e_commerce.data.model.products.LineItem;
 
-public class OrderDatum {
+public class OrderDatum implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -21,9 +24,6 @@ public class OrderDatum {
     @SerializedName("version")
     @Expose
     private String version;
-    @SerializedName("status")
-    @Expose
-    private String status;
     @SerializedName("currency")
     @Expose
     private String currency;
@@ -84,9 +84,6 @@ public class OrderDatum {
     @SerializedName("tax_lines")
     @Expose
     private List<Object> taxLines = null;
-    @SerializedName("shipping_lines")
-    @Expose
-    private List<Object> shippingLines = null;
     @SerializedName("fee_lines")
     @Expose
     private List<Object> feeLines = null;
@@ -96,21 +93,74 @@ public class OrderDatum {
     @SerializedName("refunds")
     @Expose
     private List<Object> refunds = null;
-    @SerializedName("currency_symbol")
+    @SerializedName("cart_hash")
     @Expose
-    private String currencySymbol;
-    @SerializedName("_links")
-    @Expose
-    private Links links;
+    private String cartHash;
 
 
-    public OrderDatum(Billing billing, Shipping shipping, String paymentMethod, List<LineItem> lineItem) {
+    public OrderDatum(Billing billing, Shipping shipping, String paymentMethod,
+                      List<LineItem> lineItem, String cartHash) {
         this.billing = billing;
         this.shipping = shipping;
         this.paymentMethod = paymentMethod;
         this.lineItem = lineItem;
+        this.cartHash = cartHash;
     }
 
+
+    protected OrderDatum(Parcel in) {
+        id = in.readInt();
+        parentId = in.readInt();
+        number = in.readString();
+        version = in.readString();
+        currency = in.readString();
+        dateModifiedGmt = in.readString();
+        discountTotal = in.readString();
+        discountTax = in.readString();
+        shippingTotal = in.readString();
+        shippingTax = in.readString();
+        cartTax = in.readString();
+        total = in.readString();
+        totalTax = in.readString();
+        pricesIncludeTax = in.readByte() != 0;
+        customerId = in.readInt();
+        customerIpAddress = in.readString();
+        customerUserAgent = in.readString();
+        customerNote = in.readString();
+        paymentMethod = in.readString();
+        paymentMethodTitle = in.readString();
+        lineItem = in.createTypedArrayList(LineItem.CREATOR);
+        cartHash = in.readString();
+    }
+
+    public static final Creator<OrderDatum> CREATOR = new Creator<OrderDatum>() {
+        @Override
+        public OrderDatum createFromParcel(Parcel in) {
+            return new OrderDatum(in);
+        }
+
+        @Override
+        public OrderDatum[] newArray(int size) {
+            return new OrderDatum[size];
+        }
+    };
+
+
+    public String getTotalTax() {
+        return totalTax;
+    }
+
+    public void setTotalTax(String totalTax) {
+        this.totalTax = totalTax;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
 
     public int getId() {
         return id;
@@ -155,6 +205,8 @@ public class OrderDatum {
         this.shipping = shipping;
     }
 
+
+
     public String getPaymentMethod() {
         return paymentMethod;
     }
@@ -171,10 +223,6 @@ public class OrderDatum {
         this.paymentMethodTitle = paymentMethodTitle;
     }
 
-    public void setLinks(Links links) {
-        this.links = links;
-    }
-
 
     public List<LineItem> getLineItem() {
         return lineItem;
@@ -183,5 +231,45 @@ public class OrderDatum {
 
     public void setLineItem(List<LineItem> lineItem) {
         this.lineItem = lineItem;
+    }
+
+
+    public String getCartHash() {
+        return cartHash;
+    }
+
+    public void setCartHash(String cartHash) {
+        this.cartHash = cartHash;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(parentId);
+        dest.writeString(number);
+        dest.writeString(version);
+        dest.writeString(currency);
+        dest.writeString(dateModifiedGmt);
+        dest.writeString(discountTotal);
+        dest.writeString(discountTax);
+        dest.writeString(shippingTotal);
+        dest.writeString(shippingTax);
+        dest.writeString(cartTax);
+        dest.writeString(total);
+        dest.writeString(totalTax);
+        dest.writeByte((byte) (pricesIncludeTax ? 1 : 0));
+        dest.writeInt(customerId);
+        dest.writeString(customerIpAddress);
+        dest.writeString(customerUserAgent);
+        dest.writeString(customerNote);
+        dest.writeString(paymentMethod);
+        dest.writeString(paymentMethodTitle);
+        dest.writeTypedList(lineItem);
+        dest.writeString(cartHash);
     }
 }

@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.e_commerce.data.model.orderDetails.Billing;
-import com.example.e_commerce.data.model.orderDetails.OrderDatum;
-import com.example.e_commerce.data.model.orderDetails.Shipping;
+import com.example.e_commerce.data.model.order.Billing;
+import com.example.e_commerce.data.model.order.OrderDatum;
+import com.example.e_commerce.data.model.order.Shipping;
 import com.example.e_commerce.data.model.products.LineItem;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class PaymentViewModel extends AndroidViewModel {
     /**
      * Getter of response message from repo
      *
-     * @return a message
+     * @return a response
      */
     public MutableLiveData<OrderDatum> getResponse() {
         return repo.getResponseDatum();
@@ -45,7 +45,8 @@ public class PaymentViewModel extends AndroidViewModel {
     /**
      *
      */
-    public void passData(Billing billing, Shipping shipping, String paymentMethod, List<LineItem> lineItems) {
-        repo.createOrder(billing, shipping, paymentMethod, lineItems);
+    public void passData(Billing billing, Shipping shipping, String paymentMethod,
+                         List<LineItem> lineItems,String creditCard) {
+        repo.createOrder(billing, shipping, paymentMethod, lineItems,creditCard);
     }
 }

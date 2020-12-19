@@ -1,5 +1,5 @@
 
-package com.example.e_commerce.data.model.orderDetails;
+package com.example.e_commerce.data.model.order;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

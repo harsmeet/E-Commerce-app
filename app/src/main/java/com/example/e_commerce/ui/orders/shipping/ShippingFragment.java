@@ -5,24 +5,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.e_commerce.R;
-import com.example.e_commerce.data.database.AppDatabase;
-import com.example.e_commerce.data.database.AppExecutors;
-import com.example.e_commerce.data.model.products.LineItem;
-import com.example.e_commerce.data.model.shipping.ShippingMethod;
 import com.example.e_commerce.databinding.FragmentShippingBinding;
 import com.example.e_commerce.ui.orders.payment.PaymentFragment;
+import com.example.e_commerce.utils.SingletonClass;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -35,19 +27,17 @@ public class ShippingFragment extends Fragment implements View.OnClickListener {
      * Initialization
      */
     private FragmentShippingBinding binding;
-    private ShippingViewModel viewModel;
-    List<ShippingMethod> shippingMethodList;
     private PaymentFragment paymentFragment;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String address;
-    private String postCode;
-    private String city;
-    private String country;
-    private String phoneNumber;
-    private String shippingMethod;
-    List<LineItem> lineItems;
+    SingletonClass singletonClass;
+    FragmentTransaction fr;
+    String email;
+    String firstName;
+    String lastName;
+    String address;
+    String postCode;
+    String city;
+    String country;
+    String phoneNumber;
 
 
     /**
@@ -66,38 +56,7 @@ public class ShippingFragment extends Fragment implements View.OnClickListener {
 
         // init views
         initViews();
-        // Pass data to view model
-        viewModel.passData();
-        // Observe the changes from live data
-        viewModel.getResponse().observe(getViewLifecycleOwner(), shippingMethods -> {
-            shippingMethodList = shippingMethods;
-            updateUi();
-        });
 
-        // Click listener on radio group
-        binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.rb_flat_rate) {
-                // Edit visibility
-                binding.description1.setVisibility(View.VISIBLE);
-                binding.description2.setVisibility(View.GONE);
-                binding.description3.setVisibility(View.GONE);
-                shippingMethod = "Flat rate";
-            } else if (checkedId == R.id.rb_free_shipping) {
-                // Edit visibility
-                binding.description2.setVisibility(View.VISIBLE);
-                binding.description1.setVisibility(View.GONE);
-                binding.description3.setVisibility(View.GONE);
-                shippingMethod = "Free shipping";
-            } else if (checkedId == R.id.rb_local_pickup) {
-                // Edit visibility
-                binding.description3.setVisibility(View.VISIBLE);
-                binding.description1.setVisibility(View.GONE);
-                binding.description2.setVisibility(View.GONE);
-                shippingMethod = "Local pickup";
-            }
-        });
-
-        // Return root view
         return binding.getRoot();
     }
 
@@ -107,40 +66,18 @@ public class ShippingFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.btn_to_payment) {
             // Get user input
             getUserInput();
-            // Create a bundle to pass the data
-            Bundle bundle = new Bundle();
-            bundle.putString("email", email);
-            bundle.putString("first_name", firstName);
-            bundle.putString("last_name", lastName);
-            bundle.putString("address", address);
-            bundle.putString("post_code", postCode);
-            bundle.putString("city", city);
-            bundle.putString("country", country);
-            bundle.putString("phone_number", phoneNumber);
-            bundle.putString("shipping_method", shippingMethod);
-
-            // Go to payment fragment with data
-            paymentFragment.setArguments(bundle);
-            FragmentTransaction fr = getParentFragmentManager().beginTransaction();
-            fr.replace(R.id.fragment_container, paymentFragment);
-            fr.commit();
         }
     }
-
 
     /**
      * Initialize the views
      */
     private void initViews() {
-        // Setup for view model
-        viewModel = new ViewModelProvider(Objects.requireNonNull(getActivity()))
-                .get(ShippingViewModel.class);
         // Register click listener
         binding.btnToPayment.setOnClickListener(this);
-        // Reference to list
-        shippingMethodList = new ArrayList<>();
         paymentFragment = new PaymentFragment();
-        lineItems = new ArrayList<>();
+        singletonClass = SingletonClass.getInstance();
+        binding.tvCartDetails.setText(String.valueOf(singletonClass.getBillTotal()));
     }
 
 
@@ -158,25 +95,22 @@ public class ShippingFragment extends Fragment implements View.OnClickListener {
         city = binding.etCity.getEditText().getText().toString().trim();
         country = binding.etCountry.getEditText().getText().toString().trim();
         phoneNumber = binding.etPhone.getEditText().getText().toString().trim();
-    }
 
+        // Create a bundle to pass the data
+        Bundle bundle = new Bundle();
+        bundle.putString("email", email);
+        bundle.putString("first_name", firstName);
+        bundle.putString("last_name", lastName);
+        bundle.putString("address", address);
+        bundle.putString("post_code", postCode);
+        bundle.putString("city", city);
+        bundle.putString("country", country);
+        bundle.putString("phone_number", phoneNumber);
 
-    /**
-     * Displays shipping methods
-     */
-    private void updateUi() {
-        // Show visibility
-        binding.loadingIndicator.setVisibility(View.INVISIBLE);
-        binding.rbFlatRate.setVisibility(View.VISIBLE);
-        binding.rbFreeShipping.setVisibility(View.VISIBLE);
-        binding.rbLocalPickup.setVisibility(View.VISIBLE);
-        // Update radio buttons
-        binding.rbFlatRate.setText(shippingMethodList.get(0).getTitle());
-        binding.rbFreeShipping.setText(shippingMethodList.get(1).getTitle());
-        binding.rbLocalPickup.setText(shippingMethodList.get(2).getTitle());
-        // Update descriptions
-        binding.description1.setText(shippingMethodList.get(0).getDescription());
-        binding.description2.setText(shippingMethodList.get(1).getDescription());
-        binding.description3.setText(shippingMethodList.get(2).getDescription());
+        // Go to payment fragment with data
+        paymentFragment.setArguments(bundle);
+        fr = getParentFragmentManager().beginTransaction();
+        fr.replace(R.id.fragment_container, paymentFragment);
+        fr.commit();
     }
 }

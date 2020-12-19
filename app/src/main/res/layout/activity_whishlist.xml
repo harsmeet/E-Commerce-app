@@ -32,8 +32,8 @@
                 <ImageButton
                     android:id="@+id/iv_cart_icon"
                     style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
@@ -48,6 +48,7 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:visibility="invisible"
+                    android:layout_marginEnd="8dp"
                     app:cardBackgroundColor="@color/ColorBell"
                     app:cardCornerRadius="10dp"
                     app:layout_constraintEnd_toEndOf="@+id/iv_cart_icon"

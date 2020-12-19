@@ -7,21 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 
 import com.example.e_commerce.R;
 import com.example.e_commerce.adapter.CartAdapter;
-import com.example.e_commerce.data.database.AppDatabase;
-import com.example.e_commerce.data.database.AppExecutors;
-import com.example.e_commerce.data.model.products.LineItem;
 import com.example.e_commerce.databinding.ActivityCartBinding;
 import com.example.e_commerce.ui.orders.OrdersActivity;
 import com.example.e_commerce.utils.SingletonClass;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class CartActivity extends AppCompatActivity implements CartListener, View.OnClickListener {
@@ -33,9 +26,8 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
 
     private CartAdapter adapter;
     LinearLayoutManager layoutManager;
-    AppDatabase appDatabase;
-    ActivityCartBinding binding;
     CartViewModel viewModel;
+    ActivityCartBinding binding;
     SingletonClass singletonClass;
 
 
@@ -77,6 +69,7 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
     public void setValue(String value) {
         binding.tvBillTotal.setText(value);
         binding.tvSubTotal.setText(value);
+        singletonClass.setBillTotal(Integer.parseInt(value));
     }
 
 
@@ -97,8 +90,6 @@ public class CartActivity extends AppCompatActivity implements CartListener, Vie
     private void initViews() {
         // Setup for view model
         viewModel = new ViewModelProvider(CartActivity.this).get(CartViewModel.class);
-        // Get an instance of database
-        appDatabase = AppDatabase.getInstance(getApplicationContext());
         // Reference to singleton class
         singletonClass = SingletonClass.getInstance();
         // Register click listener

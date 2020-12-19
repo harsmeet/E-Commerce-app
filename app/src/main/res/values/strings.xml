@@ -22,6 +22,7 @@
     <string name="removed">Item removed</string>
     <string name="add_to_cart">ADD TO CART</string>
     <string name="qty">Qty</string>
+    <string name="qtySemi">Qty:</string>
     <string name="your_cart">Your Cart</string>
     <string name="subtotal">Subtotal</string>
     <string name="shipping">Shipping</string>
@@ -32,7 +33,7 @@
     <string name="continue_to_review">CONTINUE TO REVIEW</string>
     <string name="back">BACK</string>
     <string name="_1">1</string>
-    <string name="added_to_cart">Added to LineItem</string>
+    <string name="added_to_cart">Added to cart</string>
     <string name="you_may_also_like">You May also Like</string>
     <string name="dollar_sign">$</string>
     <string name="remove">REMOVE</string>
@@ -66,4 +67,17 @@
     <string name="shipping_method">Shipping Method</string>
     <string name="credit_card">Credit or Debit Card</string>
     <string name="caption_credit_card"><![CDATA[Enter card number, expiration date & CVV number]]></string>
+    <string name="caption_cash">If you select Cash On Delivery, you can pay for your package when our Delivery Associates bring it to your door step.</string>
+    <string name="cash_activated">Cash on delivery</string>
+    <string name="activated">activated.</string>
+    <string name="stripe">Stripe</string>
+    <string name="order_confirmation">Order confirmation sent to</string>
+    <string name="edit_btn">EDIT</string>
+    <string name="shipping_to">Shipping to:</string>
+    <string name="same_as_shipping">Same as shipping address</string>
+    <string name="finish_checkout">FINISH CHECKOUT</string>
+    <string name="thank_you">Thank you, your order</string>
+    <string name="has_been_placed">has been placed.</string>
+    <string name="continue_browsing">Continue browsing</string>
+    <string name="continue_browsing_pro">Continue browsing products</string>
 </resources>

@@ -90,7 +90,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         mDb = AppDatabase.getInstance(context);
         // Displays values on views
         holder.binding.tvTitle.setText(currentItem.getName());
-        holder.binding.tvPrice.setText(currentItem.getPrice() + "");
+        holder.binding.tvPrice.setText(String.valueOf(currentItem.getPrice()));
         holder.binding.tvCategoryCart.setText(currentItem.getCategory());
         holder.binding.tvQty.setText(String.valueOf(currentItem.getQuantity()));
         // Get url of the image
