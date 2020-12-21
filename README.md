@@ -17,7 +17,7 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 
 ## Screenshots
 
-<img src="images/1-home-grid.jpeg" width="250" > <img src="images/2-home-list.jpeg" width="250" >
+<img src="images/1-home-grid.jpg" width="250" > <img src="images/2-home-list.jpeg" width="250" >
 <img src="images/3-details.jpeg" width="250" >
 <img src="images/4-zoom.jpeg" width="250" >
 <img src="images/5-more-details.jpeg" width="250" >
