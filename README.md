@@ -1,4 +1,4 @@
-# Project Name
+# E commerce app
 
 E commerce android app let the users to buy products online
 
