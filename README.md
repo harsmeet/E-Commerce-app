@@ -17,21 +17,21 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 
 ## Screenshots
 
-<img src="images/1-home-grid.jpg" width="200" > <img src="images/2-home-list.jpg" width="250" >
-<img src="images/3-details.jpg" width="250" >
-<img src="images/4-zoom.jpg" width="250" >
-<img src="images/5-more-details.jpg" width="250" >
-<img src="images/6-wishlist.jpg" width="250" >
-<img src="images/7-cart.jpg" width="250" >
-<img src="images/8-checkout-shipping.jpg" width="250" >
-<img src="images/9-checkout-payment.jpg" width="250" >
-<img src="images/10-checkout-review.jpg" width="250" >
-<img src="images/11-review_scroll.jpg" width="250" >
-<img src="images/12-finish.jpg" width="250" >
-<img src="images/13-menu.jpg" width="250" >
-<img src="images/14-signup.jpg" width="250" >
-<img src="images/15-empty_wishlist.jpg" width="250" >
-<img src="images/16-empty-cart.jpg" width="250" >
+<img src="images/1-home-grid.jpg" width="200" > <img src="images/2-home-list.jpg" width="200" >
+<img src="images/3-details.jpg" width="200" >
+<img src="images/4-zoom.jpg" width="200" >
+<img src="images/5-more-details.jpg" width="200" >
+<img src="images/6-wishlist.jpg" width="200" >
+<img src="images/7-cart.jpg" width="200" >
+<img src="images/8-checkout-shipping.jpg" width="200" >
+<img src="images/9-checkout-payment.jpg" width="200" >
+<img src="images/10-checkout-review.jpg" width="200" >
+<img src="images/11-review_scroll.jpg" width="200" >
+<img src="images/12-finish.jpg" width="200" >
+<img src="images/13-menu.jpg" width="200" >
+<img src="images/14-signup.jpg" width="200" >
+<img src="images/15-empty_wishlist.jpg" width="200" >
+<img src="images/16-empty-cart.jpg" width="200" >
 
 
 
