@@ -2,7 +2,7 @@
 
 E commerce android app let the users to buy products online
 
-# Table of contents
+## Table of contents
 * General info
 * Screenshots
 * Technologies
