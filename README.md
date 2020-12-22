@@ -33,25 +33,21 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 <img src="images/15-empty_wishlist.jpg" width="230" >
 <img src="images/16-empty-cart.jpg" width="230" >
 
-
 ## Technologies
 
-Languages:
+1- Languages:
 - Java 
 - xml
 
-
-Architecture patterns:
+2- Architecture patterns:
 - MVVM
 
-
-Android components:
+3- Android components:
 - Activity 
 - Fragemnt
 - Broadcast receiver
 
-
-Libraries:
+4- Libraries:
 - Retrofit 2.9.0 (https://square.github.io/retrofit/)
 - Room 2.2.5 (https://developer.android.com/training/data-storage/room)
 - Picasso 2.71828 (https://square.github.io/picasso/)
