@@ -36,7 +36,12 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 ## Technologies
 
 - Retrofit 2.9.0 (https://square.github.io/retrofit/)
- 
+- Room 2.2.5 (https://developer.android.com/training/data-storage/room)
+- Picasso 2.71828 (https://square.github.io/picasso/)
+- ViewModel 2.2.0 (https://developer.android.com/jetpack/androidx/releases/lifecycle)
+- LiveData 2.2.0 (https://developer.android.com/jetpack/androidx/releases/lifecycle)
+- RxJava 3.0.0 (https://github.com/ReactiveX/RxJava)
+- Facebook Shimmer 0.4.0 (https://github.com/facebook/shimmer-android)
 
 
 
