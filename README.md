@@ -33,19 +33,23 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 <img src="images/15-empty_wishlist.jpg" width="230" >
 <img src="images/16-empty-cart.jpg" width="230" >
 
+
 ## Technologies
 
 Languages:
 - Java 
 - xml
 
+
 Architecture patterns:
 - MVVM
+
 
 Android components:
 - Activity 
 - Fragemnt
 - Broadcast receiver
+
 
 Libraries:
 - Retrofit 2.9.0 (https://square.github.io/retrofit/)
