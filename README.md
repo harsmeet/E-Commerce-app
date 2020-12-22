@@ -33,5 +33,10 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 <img src="images/15-empty_wishlist.jpg" width="230" >
 <img src="images/16-empty-cart.jpg" width="230" >
 
+## Technologies
+
+-Retrofit 2.9.0 (https://square.github.io/retrofit/)
+ 
+
 
 
