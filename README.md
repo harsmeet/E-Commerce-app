@@ -35,7 +35,7 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 
 ## Technologies
 
--Retrofit 2.9.0 (https://square.github.io/retrofit/)
+- Retrofit 2.9.0 (https://square.github.io/retrofit/)
  
 
 
