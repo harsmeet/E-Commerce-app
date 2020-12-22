@@ -35,19 +35,19 @@ ex: signup, home, details, cart, wishlist, checkout screens expect payment gatew
 
 ## Technologies
 
-1- Languages:
+### Languages:
 - Java 
 - xml
 
-2- Architecture patterns:
+### Architecture patterns:
 - MVVM
 
-3- Android components:
+### Android components:
 - Activity 
 - Fragemnt
 - Broadcast receiver
 
-4- Libraries:
+### Libraries:
 - Retrofit 2.9.0 (https://square.github.io/retrofit/)
 - Room 2.2.5 (https://developer.android.com/training/data-storage/room)
 - Picasso 2.71828 (https://square.github.io/picasso/)
