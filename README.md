@@ -66,7 +66,7 @@ To run this project, install it by download or clone.
 
 ## License
 
-```
+```html
 MIT Licence 
 
 Copyright (c) 2020 Ahmed Zaki
