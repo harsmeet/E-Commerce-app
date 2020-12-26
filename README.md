@@ -7,7 +7,7 @@ E commerce android app let the users to buy products online
 * [Screenshots](#screenshots)
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [Demo version](#demo-version)
+* [Demo version](#demo)
 * [License](#license)
 
 ## General info
@@ -65,10 +65,11 @@ To run this project, install it by download or clone.
 - Build tool v29.0.3
 - Compile sdk v30
 
-## Demo version
+## Demo 
 
 <img src="images/E-commerce.png" width="220" >
 Link to demo vesion on youtube: 
+
 (https://www.youtube.com/watch?v=EjjoycXS8eM)
 
 ## License
