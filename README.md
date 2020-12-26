@@ -7,12 +7,12 @@ E commerce android app let the users to buy products online
 * [Screenshots](#screenshots)
 * [Technologies](#technologies)
 * [Setup](#setup)
-* [Demo](#demo)
+* [YouTube Link](#youtube-link)
 * [License](#license)
 
 ## General info
 
-it's a traning project created with woo commerce api, included with all functionality related of e commerce.
+This project created with woo commerce api, included with all functionality related to e-commerce.
 ex: signup, home, details, cart, wishlist, checkout screens expect payment gateway, i will add it soon.
 
 ## Screenshots
@@ -65,10 +65,9 @@ To run this project, install it by download or clone.
 - Build tool v29.0.3
 - Compile sdk v30
 
-## Demo 
+## YouTube link 
 
 <img src="images/E-commerce.png" width="220" >
-Link to demo vesion on youtube: 
 
 (https://www.youtube.com/watch?v=EjjoycXS8eM)
 
