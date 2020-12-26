@@ -67,7 +67,7 @@ To run this project, install it by download or clone.
 
 ## Demo version
 
-link to demo vesion on youtube:
+Link to demo vesion on youtube:
 (https://www.youtube.com/watch?v=EjjoycXS8eM)
 
 ## License
