@@ -1,6 +1,5 @@
 # E commerce app
 
-E commerce android app let the users to buy products online
 
 ## Table of contents
 * [General info](#general-info)
@@ -12,8 +11,8 @@ E commerce android app let the users to buy products online
 
 ## General info
 
-This project created with woo commerce api, included with all functionality related to e-commerce.
-ex: signup, home, details, cart, wishlist, checkout screens expect payment gateway, i will add it soon.
+This project created with woo commerce api, included with all functionality related to e-commerce,
+Signup, Home, Details, Cart, Wishlist, Checkout screens expect payment gateway, i will add it soon.
 
 ## Screenshots
 
