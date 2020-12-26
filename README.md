@@ -54,6 +54,7 @@ Signup, Home, Details, Cart, Wishlist, Checkout screens expect payment gateway, 
 - RxJava 3.0.0 (https://github.com/ReactiveX/RxJava)
 - Gson 2.8.5 (https://github.com/google/gson)
 - Facebook Shimmer 0.4.0 (https://github.com/facebook/shimmer-android)
+- RecyclerView (https://developer.android.com/jetpack/androidx/releases/recyclerview)
 
 ## Setup
 
