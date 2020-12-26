@@ -68,6 +68,7 @@ To run this project, install it by download or clone.
 ## Demo version
 
 Link to demo vesion on youtube:
+<img src="images/E-commerce.png" width="220" >
 (https://www.youtube.com/watch?v=EjjoycXS8eM)
 
 ## License
