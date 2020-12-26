@@ -52,6 +52,7 @@ Signup, Home, Details, Cart, Wishlist, Checkout screens expect payment gateway, 
 - Picasso 2.71828 (https://square.github.io/picasso/)
 - View Model, Live Data, View binding 2.2.0 (https://developer.android.com/jetpack/androidx/releases/lifecycle)
 - RxJava 3.0.0 (https://github.com/ReactiveX/RxJava)
+- Gson 2.8.5 (https://github.com/google/gson)
 - Facebook Shimmer 0.4.0 (https://github.com/facebook/shimmer-android)
 
 ## Setup
