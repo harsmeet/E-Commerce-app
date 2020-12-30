@@ -58,7 +58,9 @@ Signup, Home, Details, Cart, Wishlist, Checkout screens expect payment gateway, 
 
 ## Setup
 
-To run this project, install it by download or clone.
+To run this project, install it by download or clone. then you need to register new account
+in woo commerce api (https://docs.woocommerce.com/document/woocommerce-rest-api/) 
+to aquire consumer key and secret key for your api.
 
 #### System requirements
 - Android studio v4.1.1
